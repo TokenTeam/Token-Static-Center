@@ -10,6 +10,7 @@ import (
 	"github.com/LuRenJiasWorld/Token-Static-Center/app"
 	"github.com/justinas/alice"
 	"github.com/LuRenJiasWorld/Token-Static-Center/security"
+	"net/http"
 )
 
 // 初始化服务器
@@ -19,7 +20,7 @@ func NewServer() (*vestigo.Router) {
 	imageFileHandler := alice.New(security.WhiteListFilter)
 
 	router.Get("/", app.HomePage)
-	router.Get("/image/:filename", imageFileHandler.ThenFunc(app.HomePage))
+	router.Get("/image/:filename", imageFileHandler.ThenFunc(app.HomePage).(http.HandlerFunc))
 
 
 	return router
