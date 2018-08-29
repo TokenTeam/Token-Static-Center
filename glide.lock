@@ -1,0 +1,12 @@
+hash: 3538923c4f749d49699fbe373079ec46d969a38545026fbf2f5c871ef70484df
+updated: 2018-08-28T20:17:20.802322076+08:00
+imports:
+- name: github.com/go-yaml/yaml
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
+- name: github.com/husobee/vestigo
+  version: f8f5b5dc2bd74408887fd4b462055e324c4cbd63
+- name: github.com/justinas/alice
+  version: 03f45bd4b7dad4734bc4620e46a35789349abb20
+- name: gopkg.in/gographics/imagick.v3
+  version: e5c95c340c8d9bf140ca670563906805b655d9d9
+testImports: []

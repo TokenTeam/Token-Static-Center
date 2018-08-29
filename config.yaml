@@ -1,0 +1,99 @@
+# 全局配置
+global:
+  # 调试模式 输出调试信息到控制台，关闭所有安全配置，关闭缓存
+  debug: on
+
+  # 默认监听ip地址
+  port: 8888
+
+  # 静态资源存储目录
+  storage-dir: /Users/lurenjiasworld/Documents/Coding/Golang/src/Token-Static-Center/storage/
+
+   # 日志配置
+  log:
+    # 日志存储位置
+    log-dir: /Users/lurenjiasworld/Documents/Coding/Golang/src/Token-Static-Center/log/
+    # 访问日志
+    log-access: on
+    # 操作日志
+    log-operation: on
+    # 警告日志
+    log-warning: on
+    # 错误日志
+    log-error: on
+
+  # 数据库配置
+  db:
+    # 数据库类型
+    db-type: sqlite
+    # 数据库资源
+    # sqlite填写文件位置
+    # MySQL填写user:password@tcp(localhost:5555)/dbname?charset=utf8
+    db-resource: /Users/lurenjiasworld/Documents/Coding/Golang/src/Token-Static-Center/db/data.db
+
+
+# 图片配置
+image:
+  # 最大长宽（为0即不限制）
+  max-width: 0
+  max-height: 2048
+
+  # 可上传文件类型
+  uploadable-file-type:
+    - jpg
+    - png
+    - gif
+    - tiff
+    - bmp
+    - webp
+
+  # 可获取文件类型
+  accessable-file-type:
+    - jpg
+    - png
+    - gif
+    - tiff
+    - bmp
+    - webp
+
+  # 存储文件类型（支持jpg png gif tiff webp）
+  storage-file-type: jpg
+
+  # 图片预压缩等级（仅对jpg格式存储文件有效，0为不压缩，压缩等级从1~10，压缩率逐渐提升，图片质量逐渐下降）
+  jpeg-compress-level: 2
+
+  # 最大可上传文件体积（M）
+  max-image-file-size: 20
+
+
+# 安全配置
+security:
+  # 白名单域名(上传&引用)
+  white-list:
+    - web.wutnews.net
+    - test.wutnews.net
+
+  # 是否开启资源上传Token验证
+  token: off
+
+  # 防盗链配置
+  anti-leech:
+    # 防盗链状态
+    status: on
+    # 返回防盗链警告图片，位于静态资源存储目录/error-pages/anti-leech.jpg（如果关闭，返回404）
+    show-warning: on
+
+
+# 缓存配置
+cache:
+  # 缓存状态
+  status: on
+
+  # 缓存位置
+  cache-dir: /Users/lurenjiasworld/Documents/Coding/Golang/src/Token-Static-Center/cache/
+
+  # 缓存清理时间（h）
+  gc-interval: 24
+
+  # 缓存数量清理阈值
+  gc-threshold: 5000
