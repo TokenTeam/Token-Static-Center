@@ -97,7 +97,7 @@ func GetConfig(config ...string) (result interface{}, err error) {
 	} else {
 		configItem, err := Struct2Map(configData)
 		if err != nil {
-			return nil, errors.New("配置项转换失败！无法调用配置！")
+			return nil, errors.New("配置项转换失败！无法调用配置！，具体原因：" + err.Error())
 		}
 		for i := 0; i < len(config); i ++ {
 			result = configItem[config[i]]
