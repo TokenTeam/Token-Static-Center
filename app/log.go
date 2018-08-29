@@ -1,3 +1,8 @@
+// Token-Static-Center
+// 日志模板
+// 便于输出更加规范的业务日志，增强代码复用能力
+// LiuFuXin @ Token Team 2018 <loli@lurenjia.in>
+
 package app
 
 import (

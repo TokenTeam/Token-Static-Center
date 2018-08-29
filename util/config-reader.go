@@ -3,7 +3,6 @@
 // 解析配置文件&读取配置文件
 // LiuFuXin @ Token Team 2018 <loli@lurenjia.in>
 
-
 package util
 
 import (
