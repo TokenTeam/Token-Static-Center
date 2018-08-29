@@ -12,7 +12,7 @@ import (
 
 // 首页
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	//解析指定模板文件index.html
+	//解析指定模板文件homepage.html
 	page, err := template.ParseFiles("template/homepage.html")
 
 	if err != nil {
