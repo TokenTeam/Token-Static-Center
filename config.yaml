@@ -68,10 +68,18 @@ image:
 
 # 安全配置
 security:
-  # 白名单域名(上传&引用)
+  # 白名单域名(引用)
   white-list:
-    - web.wutnews.net
-    - test.wutnews.net
+    - https://web.wutnews.net/
+    - http://test.wutnews.net/
+    - https://cn.bing.com/
+
+  # 业务AppCode（上传）（64位大小写数字）
+  app-code:
+    # 测试环境
+    - xaSQXlrSimRC18cxH0CUVrIVNGKNWYJStklMmrK8eZq9C4zcfv0QR0hzO4EL9w4U
+    # BBQ(bbq.wutnews.net)
+    - 6Jukw2pPvR0zWT3qJP3mKNYI1INfiQsqYkdGM9OPltW3JlRSBjPoFIwYAdq2XuKt
 
   # 是否开启资源上传Token验证
   token: off
