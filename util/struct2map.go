@@ -31,7 +31,7 @@ func Struct2Map(struc interface{}) (map[string]interface{}, error) {
 }
 
 // 检查所输入变量的类型
-func getStructType(struc interface{}) reflect.Type {
+func getStructType(struc interface{}) (reflect.Type) {
 	sType := reflect.TypeOf(struc)
 	if sType.Kind() == reflect.Ptr {
 		sType = sType.Elem()
