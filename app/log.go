@@ -21,3 +21,14 @@ func errorLogger(r *http.Request, err error) {
 	util.ErrorLog("app", "处理请求 " + util.GetRequestURI(r) + " 时页面渲染失败：" + err.Error() + "，客户端IP：" + util.GetRequestIP(r), "app->HomePage")
 }
 
+
+// 记录文件读取信息
+func readFileLogger(filePath string, module string) {
+	util.OperationLog("app", "读取文件 " + filePath, "app->" + module)
+}
+
+// 记录文件写入信息
+func writeFileLogger(storagePath string, module string) {
+	util.OperationLog("app", "写入文件成功！存储位置：" + storagePath, "app->" + module)
+}
+
