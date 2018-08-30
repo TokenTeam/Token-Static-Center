@@ -47,6 +47,7 @@ type Config struct {
 
 	Security struct {
 		WhiteList []string			`yaml:"white-list"`
+		AppCode []string			`yaml:"app-code"`
 		Token string				`yaml:"token"`
 		AntiLeech struct {
 			Status string			`yaml:"status"`
