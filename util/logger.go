@@ -147,7 +147,7 @@ func IsDebug() (status bool) {
 	debugStatus, err := GetConfig("Global", "Debug")
 
 	if err != nil {
-		fmt.Println("发生致命错误，", err, "，无法获取调试模式状态，默认开启调试模式以便排查错误")
+		fmt.Println("发生致命错误： ", err, " ，无法获取调试模式状态，默认开启调试模式以便排查错误")
 		return true
 	}
 
