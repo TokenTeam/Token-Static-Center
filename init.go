@@ -16,6 +16,11 @@ func main() {
 	configFilePath := flag.String("config", "", "配置文件路径，必须指定，无默认值！")
 	flag.Parse()
 
+	if *configFilePath == "" {
+		fmt.Println("请指定配置文件位置，格式为[--config 配置文件路径.yaml！]")
+		return
+	}
+
 	// Step 2. 加载配置文件
 	err := util.ReadConfig(*configFilePath)
 
