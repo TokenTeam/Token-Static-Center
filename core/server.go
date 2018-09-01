@@ -36,10 +36,19 @@ func NewServer() (vestigoRouter *vestigo.Router, err error) {
 	// 根据Debug模式切换中间件模式
 	switch debugStatus {
 		case "on":
+			// 获取文件路由：文件获取
 			imageFileHandler = alice.New()
+			// 上传文件路由：直接上传
 			break
 		case "off":
+			// 获取文件路由：白名单检查->缓存检查&缓存清理->文件获取
+			// 白名单检查：检查获取请求的HTTP Referrer
+			// 缓存检查：检查所需的图片文件是否在缓存中
+			// 缓存清理：检查缓存是否超量（根据配置文件决定）
 			imageFileHandler = alice.New(security.WhiteListFilter)
+			// 上传文件路由：Token校验->文件上传
+			// Token校验：检查 md5(AppCode前32位+时间戳去掉最后三位+AppCode后32位+Nonce+"token123")是否通过校验
+			// 校验规则：客户端传递Token、Nonce、AppCode给服务器，服务器先检查AppCode是否在配置文件中->根据服务器端时间戳计算Token->与客户端Token进行对比
 			break
 		default:
 			util.ErrorLog("server", "调试模式配置错误！请检查配置文件！", "server->debugStatus")
