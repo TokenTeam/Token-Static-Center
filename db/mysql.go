@@ -133,6 +133,7 @@ func selectMySQL(table string, query map[string]string) (queryResults map[int]ma
 		queryResults[i] = rowData
 		i++
 	}
+
 	return queryResults, nil
 }
 
@@ -162,7 +163,7 @@ func updateMySQL(table string, updateItem string, updateValue int, query map[str
 		queryWhereString = queryWhereString + " AND "
 	}
 	// 让最后一个AND有意义，不引起语法错误
-	queryWhereString = queryWhereString + "true"
+	queryWhereString = queryWhereString + "1=1"
 
 	// 预格式化更新操作
 	updateObj, err := dbHandle.Prepare("UPDATE "+ table + " SET " + updateItem + " = " + updateItem + " + " + strconv.Itoa(updateValue) + " WHERE " + queryWhereString)
