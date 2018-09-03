@@ -16,18 +16,30 @@ import (
 
 // 首页
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	//解析指定模板文件homepage.html
-	page, err := template.ParseFiles("template/homepage.html")
+	////解析指定模板文件homepage.html
+	//page, err := template.ParseFiles("template/homepage.html")
+	//
+	//if err != nil {
+	//	errorLogger(r, err)
+	//	return
+	//}
+	//
+	//
+	//accessLogger(r, "HomePage")
+	//
+	////输出到浏览器
+	//page.Execute(w, nil)
 
-	if err != nil {
-		errorLogger(r, err)
-		return
-	}
 
-	accessLogger(r, "HomePage")
+	// 配置后缀名
+	extensionName := ".jpg"
 
-	//输出到浏览器
-	page.Execute(w, nil)
+	// 输出图片
+	w.Header().Set("Content-Type", mime.TypeByExtension(extensionName))
+	w.Write(ReadImage("e44378ac-0237-4331-aaf2-63b8818e5c34", 23, "jpg", ""))
+
+
+
 }
 
 
