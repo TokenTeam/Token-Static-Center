@@ -40,7 +40,7 @@ type Config struct {
 		MaxHeight string			`yaml:"max-height"`
 		UploadableFileType []string	`yaml:"uploadable-file-type"`
 		AccessableFileType []string `yaml:"accessable-file-type"`
-		StorageFileType string		`yaml:"storage-file-type"`
+		StorageFileType string		`yaml:"static-file-type"`
 		JpegCompressLevel uint32	`yaml:"jpeg-compress-level"`
 		MaxImageFileSize uint32		`yaml:"max-image-file-size"`
 	}
@@ -65,11 +65,11 @@ type Config struct {
 
 
 // 初始化配置项
-func ReadConfig(config_file string) (err error) {
-	file, err := ioutil.ReadFile(config_file)
+func ReadConfig(configFile string) (err error) {
+	file, err := ioutil.ReadFile(configFile)
 
-	if err != nil {
-		return errors.New("配置文件打开错误！请检查文件是否存在，以及文件权限是否正确！")
+	if err != nil || configFile == "" {
+		return errors.New("配置文件打开错误！请检查文件是否存在、是否通过--config方式进行调用、以及文件权限是否正确！")
 	}
 
 	configData = Config{}
@@ -97,14 +97,14 @@ func GetConfig(config ...string) (result interface{}, err error) {
 	} else {
 		configItem, err := Struct2Map(configData)
 		if err != nil {
-			return nil, errors.New("配置项转换失败！无法调用配置！，具体原因：" + err.Error())
+			return nil, errors.New("配置项转换失败！无法调用配置！具体原因：" + err.Error())
 		}
 		for i := 0; i < len(config); i ++ {
 			result = configItem[config[i]]
 			if i < len(config) - 1 {
 				configItem, err = Struct2Map(result)
 				if err != nil {
-					return nil, errors.New("配置项转换失败！无法调用配置！")
+					return nil, errors.New("配置项转换失败！无法调用配置！具体原因：" + err.Error())
 				}
 			} else {
 				break
