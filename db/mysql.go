@@ -99,7 +99,7 @@ func selectMySQL(table string, query map[string]string) (queryResults map[int]ma
 		queryWhereString = queryWhereString + " AND "
 	}
 	// 让最后一个AND有意义，不引起语法错误
-	queryWhereString = queryWhereString + "true"
+	queryWhereString = queryWhereString + "1=1"
 
 	// 查询
 	queryRows, err := dbHandle.Query("SELECT * FROM " + table + " WHERE " + queryWhereString)
