@@ -123,7 +123,26 @@ func UploadCounter() (err error) {
 
 // 下载次数增加计数
 func DownloadCount() (err error) {
+// 获取数据库类型
+func getDBType() (dbType string, err error) {
+	// 获取数据库类型配置文件
+	dbTypeInterface, err := util.GetConfig("Global", "Db", "DbType")
 
+	if err != nil {
+		return "", errors.New("数据库类型获取失败，原因：" + err.Error())
+	}
+
+	// 转换Interface到String
+	dbTypeString := dbTypeInterface.(string)
+
+	switch dbTypeString {
+		case "mysql":
+			return "mysql", nil
+		case "sqlite":
+			return "sqlite", nil
+		default:
+			return "", errors.New("获取数据库类型时出现致命错误：不受支持的数据库类型：" + dbTypeString)
+	}
 }
 
 func Test() {
