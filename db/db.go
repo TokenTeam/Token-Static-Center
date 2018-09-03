@@ -5,6 +5,14 @@
 
 package db
 
+import (
+	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"errors"
+	"time"
+	"strconv"
+	"fmt"
+)
+
 // 数据库结构（以MySQL为例，SQLite具体参考sqlite.go->checkDBStructureSQLite方法）
 // token_static_center数据库（具体数据库名称由配置文件决定）SQLite数据库情况下无索引
 // |- image_info数据表
@@ -29,10 +37,36 @@ package db
 // |  |- download_size_byte bigint		当日下载大小（Byte）
 
 // 写入图片数据
-func WriteImageDB(GUID string, fileSize uint64, fileFormat string, AppCode string) (err error) {
+func WriteImageDB(GUID string, fileSize uint64, fileFormat string, AppCode string, md5 string) (err error) {
+	t := time.Now()
+	year := t.Year()
+	month := int(t.Month())
 
+	// 获取数据库类型
+	dbType, err := getDBType()
+
+	if err != nil {
+		return errors.New("写入图片数据过程中校验数据库类型失败，原因：" + err.Error())
+	}
+
+	switch dbType {
+		case "mysql":
+			writeData := []string{GUID, strconv.Itoa(year), strconv.Itoa(month), strconv.FormatUint(fileSize, 10), fileFormat, "", AppCode, md5, "0"}
+			err = insertMySQL("image_info", writeData)
+			break
+		case "sqlite":
+			writeData := []string{GUID, strconv.Itoa(year), strconv.Itoa(month), strconv.FormatUint(fileSize, 10), fileFormat, time.Now().Format("2006-01-02 15:04:05"), AppCode, md5, "0"}
+			err = insertSQLite("image_info", writeData)
+			break
+		// Default类型此前已经判断过，不需要重复判断
+	}
+
+	if err != nil {
+		return errors.New("写入图片数据过程中写入到数据库失败，原因：" + err.Error())
+	}
+
+	return nil
 }
-
 // 读取图片数据
 func ReadImageDB(GUID string) (year string, month string, md5 string ) {
 
