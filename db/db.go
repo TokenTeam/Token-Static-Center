@@ -181,12 +181,94 @@ func ReadGC() (intervalTime int, err error) {
 }
 
 // 上传次数增加计数
-func UploadCounter() (err error) {
+func UploadCounter(upload_size_byte int) (err error) {
+	// 获取数据库类型
+	dbType, err := getDBType()
 
+	if err != nil {
+		return errors.New("上传计数自增中校验数据库类型失败，原因：" + err.Error())
+	}
+
+	// t.Format的layout参数是魔法数字，不要修改
+	t := time.Now()
+	date := t.Format("2006-01-02")
+
+	queryData := map[string]string{"date":date}
+
+	var (
+		err1 error
+		err2 error
+	)
+
+	switch dbType {
+		case "mysql":
+			// 先检查是否存在当日记录（可能会产生错误，无视之，有错误说明该记录已存在，否则写入新纪录）
+			execMySQL("INSERT INTO image_statistics VALUES ('" + date + "', 0, 0, 0, 0)")
+			err1 = updateMySQL("image_statistics", "upload_count", 1, queryData)
+			err2 = updateMySQL("image_statistics", "upload_size_byte", upload_size_byte, queryData)
+			break
+		case "sqlite":
+			execSQLite("INSERT INTO image_statistics VALUES ('" + date + "', 0, 0, 0, 0)")
+			err1 = updateSQLite("image_statistics", "upload_count", 1, queryData)
+			err2 = updateSQLite("image_statistics", "upload_size_byte", upload_size_byte, queryData)
+			break
+		// Default类型此前已经判断过，不需要重复判断
+	}
+
+	if err1 != nil || err2 != nil {
+		return errors.New("上传计数自增中更新数据失败，原因：" + err1.Error() + err2.Error())
+	}
+
+	return nil
 }
 
 // 下载次数增加计数
-func DownloadCount() (err error) {
+func DownloadCounter(guid string, download_size_byte int) (err error) {
+	// 获取数据库类型
+	dbType, err := getDBType()
+
+	if err != nil {
+		return errors.New("上传计数自增中校验数据库类型失败，原因：" + err.Error())
+	}
+
+	// t.Format的layout参数是魔法数字，不要修改
+	t := time.Now()
+	date := t.Format("2006-01-02")
+
+	queryData := map[string]string{"date":date}
+
+	var (
+		err1 error		// 当日总下载计数
+		err2 error		// 当日总下载数据量
+		err3 error		// 对应文件下载数据量
+	)
+
+	fileQuery := map[string]string{"guid":guid}
+
+	switch dbType {
+		case "mysql":
+			// 先检查是否存在当日记录（可能会产生错误，无视之，有错误说明该记录已存在，否则写入新纪录）
+			execMySQL("INSERT INTO image_statistics VALUES ('" + date + "', 0, 0, 0, 0)")
+			err1 = updateMySQL("image_statistics", "download_count", 1, queryData)
+			err2 = updateMySQL("image_statistics", "download_size_byte", download_size_byte, queryData)
+			err3 = updateMySQL("image_info", "download_count", 1, fileQuery)
+			break
+		case "sqlite":
+			execSQLite("INSERT INTO image_statistics VALUES ('" + date + "', 0, 0, 0, 0)")
+			err2 = updateSQLite("image_statistics", "download_count", 1, queryData)
+			err2 = updateSQLite("image_statistics", "download_size_byte", download_size_byte, queryData)
+			err3 = updateSQLite("image_info", "download_count", 1, fileQuery)
+			break
+		// Default类型此前已经判断过，不需要重复判断
+	}
+
+	if err1 != nil || err2 != nil || err3 != nil {
+		return errors.New("上传计数自增中更新数据失败，原因：" + err1.Error() + err2.Error())
+	}
+
+	return nil
+}
+
 // 获取数据库类型
 func getDBType() (dbType string, err error) {
 	// 获取数据库类型配置文件
