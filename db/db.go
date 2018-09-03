@@ -108,12 +108,76 @@ func ReadImageDB(GUID string) (year int, month int, md5 string, format string, e
 
 // 写入上次GC时间
 func UpdateGC(garbageCount int) (err error) {
+	// 获取数据库类型
+	dbType, err := getDBType()
 
+	if err != nil {
+		return errors.New("写入垃圾收集记录中校验数据库类型失败，原因：" + err.Error())
+	}
+
+	switch dbType {
+		case "mysql":
+			writeData := []string{"", "", strconv.Itoa(garbageCount)}
+			err = insertMySQL("gc_log", writeData)
+			break
+		case "sqlite":
+			writeData := []string{"", time.Now().Format("2006-01-02 15:04:05"), strconv.Itoa(garbageCount)}
+			err = insertSQLite("gc_log", writeData)
+			break
+		// Default类型此前已经判断过，不需要重复判断
+	}
+
+	if err != nil {
+		return errors.New("写入垃圾收集记录中写入到数据库失败，原因：" + err.Error())
+	}
+
+	return nil
 }
 
 // 读取上次GC时间间隔（秒）
-func ReadGC() (intervalTime int) {
+func ReadGC() (intervalTime int, err error) {
+	// 获取数据库类型
+	dbType, err := getDBType()
 
+	if err != nil {
+		return -1, errors.New("读取垃圾收集记录中校验数据库类型失败，原因：" + err.Error())
+	}
+
+	selectData := map[string]string{}
+
+	// 返回回来的数据集
+	gcData := map[int]map[string]string{}
+
+	switch dbType {
+		case "mysql":
+			gcData, err = selectMySQL("gc_log", selectData)
+			break
+		case "sqlite":
+			gcData, err = selectSQLite("gc_log", selectData)
+			break
+		// Default类型此前已经判断过，不需要重复判断
+	}
+
+	if err != nil {
+		return -1, errors.New("读取垃圾收集记录中读取数据集失败，原因：" + err.Error())
+	}
+
+	// 返回所有GC日志
+	// 获取最新一条的GC日志
+	lastIndex := len(gcData) - 1
+	lastGCTime := gcData[lastIndex]["collection_time"]
+
+	// 获取上一次垃圾回收时间戳
+	// time.ParseInLocation的Layout参数是魔法数字，不要修改
+	lastGCTimeStamp, _ := time.ParseInLocation("2006-01-02 15:04:05", lastGCTime, time.Local)
+	lastGCTimeStampInt64 := lastGCTimeStamp.Unix()
+
+	// 获取当前时间戳
+	currentTime := time.Now()
+	currentTimeStampInt64 := currentTime.Unix()
+
+	timeInterval := int(currentTimeStampInt64 - lastGCTimeStampInt64)
+	return timeInterval, nil
 }
 
 // 上传次数增加计数
