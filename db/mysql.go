@@ -31,7 +31,18 @@ func insertMySQL(table string, data []string) (err error) {
 	// 处理插入数据
 	insertValueString := "("
 	for i := range data {
-		insertValueString = insertValueString + "\"" + data[i] + "\""
+		// 利用Atoi的报错机制，将字符串和数字区分出来
+		_, err := strconv.Atoi(data[i])
+		if err != nil {
+			if len(data[i]) == 0 {
+				insertValueString = insertValueString + "null"
+			} else {
+				insertValueString = insertValueString + "\"" + data[i] + "\""
+			}
+		} else {
+			insertValueString = insertValueString + data[i]
+		}
+
 
 		// 如果i不是最后一个索引，尾部添加逗号
 		if i != len(data) - 1 {
