@@ -36,6 +36,7 @@ import (
 // |  |- upload_size_byte bigint		当日上传大小（Byte）
 // |  |- download_size_byte bigint		当日下载大小（Byte）
 
+
 // 写入图片数据
 func WriteImageDB(GUID string, fileSize uint64, fileFormat string, AppCode string, md5 string) (err error) {
 	t := time.Now()
@@ -67,9 +68,42 @@ func WriteImageDB(GUID string, fileSize uint64, fileFormat string, AppCode strin
 
 	return nil
 }
-// 读取图片数据
-func ReadImageDB(GUID string) (year string, month string, md5 string ) {
 
+// 读取图片数据
+func ReadImageDB(GUID string) (year int, month int, md5 string, format string, err error) {
+	// 获取数据库类型
+	dbType, err := getDBType()
+
+	if err != nil {
+		return -1, -1, "", "",  errors.New("读取图片数据过程中校验数据库类型失败，原因：" + err.Error())
+	}
+
+	selectData := map[string]string{"guid":GUID}
+
+	// 返回回来的数据集
+	imageData := map[int]map[string]string{}
+
+	switch dbType {
+		case "mysql":
+			imageData, err = selectMySQL("image_info", selectData)
+			break
+		case "sqlite":
+			imageData, err = selectSQLite("image_info", selectData)
+			break
+		// Default类型此前已经判断过，不需要重复判断
+	}
+
+	if err != nil {
+		return -1, -1, "", "", errors.New("读取图片数据过程中读取数据集失败，原因：" + err.Error())
+	}
+
+	// 此处只需要一条（唯一一条）记录
+	year, _ = strconv.Atoi(imageData[0]["year"])
+	month, _ = strconv.Atoi(imageData[0]["month"])
+	format = imageData[0]["file_storage_format"]
+	md5 = imageData[0]["md5"]
+
+	return year, month, md5, format, nil
 }
 
 // 写入上次GC时间
