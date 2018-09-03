@@ -95,11 +95,11 @@ func selectSQLite(table string, query map[string]string) (queryResults map[int]m
 	// 将map转换为map[1]key=map[1]value AND ...... AND true 格式
 	queryWhereString := ""
 	for key, value := range query {
-		queryWhereString = queryWhereString + key + "=" + "'" + value + "'"
+		queryWhereString = queryWhereString + "`" + key + "`" + "=" + "'" + value + "'"
 		queryWhereString = queryWhereString + " AND "
 	}
 	// 让最后一个AND有意义，不引起语法错误
-	queryWhereString = queryWhereString + "true"
+	queryWhereString = queryWhereString + "1=1"
 
 	// 查询
 	queryRows, err := dbHandle.Query("SELECT * FROM " + table + " WHERE " + queryWhereString)
