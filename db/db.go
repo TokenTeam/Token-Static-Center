@@ -302,4 +302,11 @@ func Test() {
 	//fmt.Println(selectMySQL("image_statistics", query))
 
 	//fmt.Println(execMySQL("SELECT * FROM image_statistics"))
+
+	//fmt.Println(UpdateGC(231))
+	//
+	//fmt.Println(ReadGC())
+
+	fmt.Println(DownloadCounter("e44378ac-0237-4331-aaf2-63b8818e5c34", 132132))
+
 }
