@@ -156,7 +156,16 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 				return
 		}
 
+		// 校验返回图像数据有效性，如果返回数据为空，报错
+		if imageData == nil {
+			ErrorPage(w, r, 404, "ImageFetchHandler", "图像读取与处理时，出现致命错误，返回空数据")
+		}
 
+		// 输出图片
+		extensionName := "." + fileExtension
+		w.Header().Set("Content-Type", mime.TypeByExtension(extensionName))
+		w.Write(imageData)
+	//}
 }
 
 // 图像上传
