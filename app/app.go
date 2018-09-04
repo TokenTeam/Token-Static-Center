@@ -106,6 +106,15 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 			ErrorPage(w, r, 404, "ImageFetchHandler", "请求URL中存在不合法数值")
 			return
 		}
+		switch len(requestParams) {
+			// 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80.jpg
+			// 即为请求GUID为e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，不带水印的JPG格式图片资源
+			// 不带水印获取图片资源
+			case 8:
+				targetFormat := requestParams[7]
+				fileExtension = targetFormat
+				imageData = ReadImage(GUID, uint(width), targetFormat, uint(quality), "", 0, 0, 0, "", "", "")
+				break
 
 }
 
