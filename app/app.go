@@ -115,6 +115,23 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 				fileExtension = targetFormat
 				imageData = ReadImage(GUID, uint(width), targetFormat, uint(quality), "", 0, 0, 0, "", "", "")
 				break
+			// 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-wutnews-1-30-15.jpg
+			// 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印名称为wutnews，水印位置为左上角，水印透明度为30%透明，水印大小为15%宽度（相对于图片宽度）的JPG格式图片资源
+			// 带图片水印获取图片资源
+			case 12:
+				watermarkName := requestParams[7]
+				watermarkPosition, err := strconv.Atoi(requestParams[8])
+				watermarkOpacity, err := strconv.Atoi(requestParams[9])
+				watermarkSize, err := strconv.Atoi(requestParams[10])
+				targetFormat := requestParams[11]
+				fileExtension = targetFormat
+				// 校验参数有效性
+				if err != nil || watermarkOpacity > 100 || watermarkOpacity < 0 {
+					ErrorPage(w, r, 404, "ImageFetchHandler", "图片水印参数中存在不合法数值")
+					return
+				}
+				imageData = ReadImage(GUID, uint(width), targetFormat, uint(quality), watermarkName, uint(watermarkPosition), uint(watermarkOpacity), uint(watermarkSize), "", "", "")
+				break
 
 }
 
