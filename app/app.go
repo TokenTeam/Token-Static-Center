@@ -98,8 +98,14 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-// 图像输出
-func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
+		// 根据URL参数个数，筛选输出类型
+		width, err := strconv.Atoi(requestParams[5])
+		quality, err := strconv.Atoi(requestParams[6])
+		// 校验参数有效性
+		if err != nil || quality > 100 || quality < 0 {
+			ErrorPage(w, r, 404, "ImageFetchHandler", "请求URL中存在不合法数值")
+			return
+		}
 
 }
 
