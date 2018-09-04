@@ -12,6 +12,8 @@ import (
 	"errors"
 	"github.com/LuRenJiasWorld/Token-Static-Center/util"
 	"mime"
+	"strings"
+	"fmt"
 )
 
 // 首页
@@ -32,16 +34,69 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 
 	// 配置后缀名
-	extensionName := ".jpg"
+	//extensionName := ".jpg"
+	//
+	//// 输出图片
+	//w.Header().Set("Content-Type", mime.TypeByExtension(extensionName))
+	//w.Write(ReadImage("e44378ac-0237-4331-aaf2-63b8818e5c34", 500, "jpg", "go", 3, 10, 30))
 
-	// 输出图片
-	w.Header().Set("Content-Type", mime.TypeByExtension(extensionName))
-	w.Write(ReadImage("e44378ac-0237-4331-aaf2-63b8818e5c34", 23, "jpg", ""))
-
-
+	ImageFetchHandler(w, r)
 
 }
 
+
+// 图像输出
+func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
+	var (
+		imageData []byte
+		fileExtension string
+	)
+
+	// 获取请求（/image/bla-bla-bla-bla.bla）
+	requestParam := r.RequestURI
+
+	//// 检查缓存状态
+	//if true {
+	//
+	//} else {
+		// 以连字符拆分URI
+		var (
+			requestPath []string
+			requestParams []string
+			tempSlice []string
+		)
+
+		// Step1: /image/bla-bla-bla-bla.bla => {"", "image", "bla-bla-bla-bla.bla"}
+		requestPath = strings.Split(requestParam, "/")
+		// Step2: bla-bla-bla-bla.bla => {"bla", "bla", "bla", "bla.bla"}
+		requestParams = strings.Split(requestPath[2], "-")
+		// Step3: bla.bla => {"bla", "bla"}
+		tempSlice = strings.Split(requestParams[len(requestParams) - 1], ".")
+		// Step4: {"bla", "bla", "bla", "bla.bla"} + {"bla", "bla"} => {"bla", "bla", "bla", "bla", "bla"}
+		requestParams = append(requestParams[0:len(requestParams) - 1], tempSlice[0], tempSlice[1])
+
+		fmt.Println(requestParams)
+
+		// 解决参数过少时引起的故障
+		if len(requestParams) < 7 {
+			ErrorPage(w, r, 404,"ImageFetchHandler", "参数严重不足，只有" + strconv.Itoa(len(requestParams)) + "个")
+			return
+		}
+
+		// 解析GUID
+		GUID := ""
+		// GUID总共由五个片段组成，之间使用连字符进行连接
+		for i := 0; i < 4; i++ {
+			GUID = GUID + requestParams[i] + "-"
+		}
+		GUID = GUID + requestParams[4]
+
+		// GUID基础校验（仅校验长度）
+		if len(GUID) != 36 {
+			// 抛出404错误
+			ErrorPage(w, r, 404, "ImageFetchHandler", "GUID校验失败")
+			return
+		}
 
 // 图像输出
 func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
