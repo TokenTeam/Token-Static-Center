@@ -97,6 +97,11 @@ func ReadImageDB(GUID string) (year int, month int, md5 string, format string, e
 		return -1, -1, "", "", errors.New("读取图片数据过程中读取数据集失败，原因：" + err.Error())
 	}
 
+	// 数据不存在的情况
+	if len(imageData) == 0 {
+		return -2, -2, "", "", errors.New("数据不存在")
+	}
+
 	// 此处只需要一条（唯一一条）记录
 	year, _ = strconv.Atoi(imageData[0]["year"])
 	month, _ = strconv.Atoi(imageData[0]["month"])
