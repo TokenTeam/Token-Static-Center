@@ -132,6 +132,30 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				imageData = ReadImage(GUID, uint(width), targetFormat, uint(quality), watermarkName, uint(watermarkPosition), uint(watermarkOpacity), uint(watermarkSize), "", "", "")
 				break
+			// 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-%40Token+Team-1-20-30-FFFFFF-regular.jpg
+			// 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印文本为@Token Team，水印位置为左上角，水印透明度为20%透明，水印字体大小为30px，水印颜色为FFFFFF，水印字体样式为普通字体样式的JPG格式图片资源
+			// 带文字水印获取图片资源
+			case 14:
+				watermarkText := requestParams[7]
+				watermarkPosition, err := strconv.Atoi(requestParams[8])
+				watermarkOpacity, err := strconv.Atoi(requestParams[9])
+				watermarkSize, err := strconv.Atoi(requestParams[10])
+				watermarkColor := requestParams[11]
+				watermarkStyle := requestParams[12]
+				targetFormat := requestParams[13]
+				fileExtension = targetFormat
+				// 校验参数有效性
+				if err != nil || watermarkOpacity > 100 || watermarkOpacity < 0 {
+					ErrorPage(w, r, 404, "ImageFetchHandler", "文字水印参数中存在不合法数值")
+				}
+				imageData = ReadImage(GUID, uint(width), targetFormat, uint(quality), "", uint(watermarkPosition), uint(watermarkOpacity), uint(watermarkSize), watermarkText, watermarkColor, watermarkStyle)
+				break
+			// 错误捕获
+			default:
+				ErrorPage(w, r, 404, "ImageFetchHandler", "请求URL参数个数不正确")
+				return
+		}
+
 
 }
 
