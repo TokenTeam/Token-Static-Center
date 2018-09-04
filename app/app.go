@@ -169,20 +169,21 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // 图像上传
-func ImageUploadHandler() {
+func ImageUploadHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
 // 错误页面
-func ErrorPage(w http.ResponseWriter, r *http.Request, errorType int) {
+func ErrorPage(w http.ResponseWriter, r *http.Request, errorType int, errorModule string, errorMessage string) {
 	page, err := template.ParseFiles("template/" + strconv.Itoa(errorType) + ".html")
 
 	if err != nil {
-		errorLogger(r, err)
+		errorLogger(r, err, errorModule)
 		return
 	}
 
-	errorLogger(r, errors.New("接收访问请求时出现错误，错误码：" + strconv.Itoa(errorType)))
+	// 自动记录错误日志
+	errorLogger(r, errors.New("接收访问请求时出现错误，错误码：" + strconv.Itoa(errorType) + "，相关信息：" + errorMessage), errorModule)
 
 	// 输出自定义错误码
 	w.WriteHeader(errorType)
