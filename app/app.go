@@ -165,7 +165,28 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 		extensionName := "." + fileExtension
 		w.Header().Set("Content-Type", mime.TypeByExtension(extensionName))
 		w.Write(imageData)
-	//}
+
+		// 执行缓存操作
+		if debugConfig != "on" && cacheConfig == "on" {
+			cacheLocation, cacheSizeByte, err := CacheWriteHandler(imageData, requestPath[2])
+			if err != nil {
+				util.ErrorLog("app", "执行存储缓存失败，原因：" + err.Error(), "app->ImageFetchHandler")
+			}
+			util.OperationLog("app", "执行存储缓存成功，缓存位置：" + cacheLocation + "，缓存大小：" + strconv.Itoa(cacheSizeByte / 1024) + "kb", "app->ImageFetchHandler")
+		}
+
+	}
+
+	// 记录访问流量与频次
+	err = db.DownloadCounter(GUID, cacheSizeByte)
+	if err != nil {
+		util.ErrorLog("app", "记录访问失败，原因：" + err.Error(), "app->ImageFetchHandler")
+	}
+
+	// 记录执行时间
+	elapsedTime := time.Since(startTime)
+	util.OperationLog("app", "执行图片获取请求成功，耗时" + strconv.FormatInt(int64(elapsedTime) / 1000000, 10) + "ms", "app->ImageFetchHandler")
+
 }
 
 // 图像上传
