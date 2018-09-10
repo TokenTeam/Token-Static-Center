@@ -49,6 +49,7 @@ type Config struct {
 		WhiteList []string			`yaml:"white-list"`
 		AppCode []string			`yaml:"app-code"`
 		Token string				`yaml:"token"`
+		TokenSalt string			`yaml:"token-salt"`
 		AntiLeech struct {
 			Status string			`yaml:"status"`
 			ShowWarning string		`yaml:"show-warning"`
