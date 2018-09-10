@@ -113,7 +113,11 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 			case 8:
 				targetFormat := requestParams[7]
 				fileExtension = targetFormat
-				imageData = ReadImage(GUID, uint(width), targetFormat, uint(quality), "", 0, 0, 0, "", "", "")
+				imageData, err = ReadImage(GUID, uint(width), targetFormat, uint(quality), "", 0, 0, 0, "", "", "")
+				if err != nil {
+					ErrorPage(w, r, 404, "ImageFetchHandler", "图像处理模块返回错误信息：" + err.Error())
+					return
+				}
 				break
 			// 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-wutnews-1-30-15.jpg
 			// 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印名称为wutnews，水印位置为左上角，水印透明度为30%透明，水印大小为15%宽度（相对于图片宽度）的JPG格式图片资源
