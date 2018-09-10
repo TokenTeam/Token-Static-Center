@@ -29,8 +29,23 @@ func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream 
 }
 
 // 缓存写入
-func CacheWriteHandler() () {
+func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation string, fileSizeByte int, err error) {
+	// 获取缓存路径
+	cachePath, err := getCachePath(cacheFileName)
+	if err != nil {
+		return "", -1, errors.New("写入缓存时遭遇致命错误：" + err.Error())
+	}
 
+	// 写入文件
+	err = writeFile(cachePath, cacheStream)
+	if err != nil {
+		return "", -1, errors.New("图片资源缓存时存储文件过程中遭遇致命错误：" + err.Error())
+	}
+
+	// 计算文件大小
+	fileSizeByte = bytes.Count(cacheStream, nil)
+
+	return cachePath, fileSizeByte, nil
 }
 
 // 缓存垃圾回收
