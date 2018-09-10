@@ -82,7 +82,10 @@ security:
     - 6Jukw2pPvR0zWT3qJP3mKNYI1INfiQsqYkdGM9OPltW3JlRSBjPoFIwYAdq2XuKt
 
   # 是否开启资源上传Token验证
-  token: off
+  token: on
+
+  # 当前Token验证的Salt String
+  token-salt: fuckjwc
 
   # 防盗链配置
   anti-leech:
