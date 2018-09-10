@@ -57,7 +57,7 @@ http://example.com/image/`GUID`-`width`-`quality`-`text`-`fontPosition`-`fontOpa
 - fontSize 水印字体大小（px）
 - fontColor 水印颜色（16进制码，不含#符号，大小写不限，例如黑色：000000，白色：FFFFFF）
 - fontStyle 水印字体样式
-  - italic 斜体
+  - light 细字体
   - bold 粗体
   - regular 普通字体
 - fileExtension 图片格式，以配置文件内所支持的格式列表为准
