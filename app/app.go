@@ -94,10 +94,49 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 		// GUID基础校验（仅校验长度）
 		if len(GUID) != 36 {
 			// 抛出404错误
-			ErrorPage(w, r, 404, "ImageFetchHandler", "GUID校验失败")
-			return
-		}
+		ErrorPage(w, r, 404, "ImageFetchHandler", "GUID校验失败")
+		return
+	}
 
+	// 缓存开关检查
+	cacheConfig, err := util.GetConfig("Cache", "Status")
+	// 转换Interface到String
+	cacheConfig = cacheConfig.(string)
+	if err != nil {
+		ErrorPage(w, r, 500, "ImageFetchHandler", "缓存开关获取失败，请检查配置文件状态！" + err.Error())
+		return
+	}
+
+	// 调试模式检查
+	debugConfig, err := util.GetConfig("Global", "Debug")
+	// 转换Interface到String
+	debugConfig = debugConfig.(string)
+	if err != nil {
+		ErrorPage(w, r, 500, "ImageFetchHandler", "调试模式状态获取失败，请检查配置文件状态！" + err.Error())
+		return
+	}
+
+	// 调试模式下提醒缓存被旁通
+	if debugConfig == "on" {
+		util.WarningLog("app", "调试模式已开启，缓存机制将会被旁通", "app->ImageFetchHandler")
+	}
+
+	// 读取缓存
+	cacheStatus, imageData, cacheSizeByte, err := CacheFetchHandler(requestPath[2])
+
+	if err != nil {
+		ErrorPage(w, r, 500, "ImageFetchHandler", "读取缓存失败，原因：" + err.Error())
+	}
+
+	// 检查缓存状态
+	// 如果缓存已开启，并且缓存存在，而且配置文件没有打开调试模式
+	if cacheConfig == "on" && cacheStatus == true && debugConfig != "on" {
+		// 切分出文件扩展名
+		extensionName := strings.Split(requestPath[2], ".")[1]
+		w.Header().Set("Content-Type", mime.TypeByExtension(extensionName))
+		w.Write(imageData)
+		util.OperationLog("app", "缓存成功命中，读取缓存成功，缓存大小：" + strconv.Itoa(cacheSizeByte / 1024) + "kb", "app->ImageFetchHandler")
+	} else {
 		// 根据URL参数个数，筛选输出类型
 		width, err := strconv.Atoi(requestParams[5])
 		quality, err := strconv.Atoi(requestParams[6])
