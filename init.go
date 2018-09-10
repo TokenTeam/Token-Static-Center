@@ -1,5 +1,3 @@
-
-
 package main
 
 import (
@@ -9,9 +7,15 @@ import (
 	"github.com/LuRenJiasWorld/Token-Static-Center/core"
 	"net/http"
 	"fmt"
+	"gopkg.in/gographics/imagick.v2/imagick"
 )
 
 func main() {
+	// 初始化
+	imagick.Initialize()
+	// 延迟执行
+	defer imagick.Terminate()
+
 	// Step 1. 从命令行参数获取配置文件路径
 	configFilePath := flag.String("config", "", "配置文件路径，必须指定，无默认值！")
 	flag.Parse()
@@ -50,7 +54,11 @@ func main() {
 
 
 	// Step 4. 开始监听
-	server := core.NewServer()
-	util.ErrorLog("main", http.ListenAndServe(fmt.Sprintf(":%d", listenPort), server).Error(), "main->ListenAndServe")
+	server, err := core.NewServer()
 
+	if err != nil {
+		util.ErrorLog("main", "服务器启动失败，原因：" + err.Error(), "main->NewServer")
+	}
+
+	util.ErrorLog("main", http.ListenAndServe(fmt.Sprintf(":%d", listenPort), server).Error(), "main->ListenAndServe")
 }
