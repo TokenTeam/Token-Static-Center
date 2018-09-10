@@ -5,6 +5,12 @@
 
 package app
 
+import (
+	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"errors"
+	"bytes"
+)
+
 // 缓存获取
 func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream []byte, fileSizeByte int, err error) {
 	// 获取缓存路径
@@ -51,4 +57,25 @@ func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation 
 // 缓存垃圾回收
 func CacheGCHandler() () {
 
+}
+
+func getCachePath(cacheFileName string) (path string, err error) {
+	// 检查文件名是否为空
+	if cacheFileName == "" {
+		return "", errors.New("图片资源缓存时获取缓存目录配置过程中遭遇致命错误：所请求的文件名为空！")
+	}
+
+	// 获取缓存目录配置文件
+	cachePathInterface, _ := util.GetConfig("Cache", "CacheDir")
+
+	// 转换Interface到String
+	cachePathString := cachePathInterface.(string)
+	if err != nil {
+		return "", errors.New("图片资源缓存时获取缓存目录配置过程中遭遇致命错误：" + err.Error())
+	}
+
+	// 拼接最终缓存目录
+	cachePath := cachePathString + cacheFileName
+
+	return cachePath, nil
 }
