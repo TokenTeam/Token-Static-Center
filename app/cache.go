@@ -59,6 +59,8 @@ func CacheGCHandler() () {
 
 }
 
+// 获取缓存路径
+// 将缓存目录与缓存文件名进行拼接获取缓存路径
 func getCachePath(cacheFileName string) (path string, err error) {
 	// 检查文件名是否为空
 	if cacheFileName == "" {
