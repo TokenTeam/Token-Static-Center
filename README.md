@@ -90,7 +90,7 @@ http://example.com/upload/`accessToken`-`Nonce`.`fileFormat`
 
 ### AccessToken计算方法：
 
-md5(AppCode前32位数+时间戳去掉最后三位数+AppCode后32位数+随机Nonce+token123)
+md5(AppCode前32位数+时间戳去掉最后四位数+AppCode后32位数+随机Nonce+token123)
 
 其中AppCode为64位小写字母&数字随机数，存储于静态资源引擎的配置文件中，每个业务一个AppCode
 
@@ -98,7 +98,7 @@ Nonce为16位随机小写字母
 
 > *建议由服务端传递给前端，前端不要完成计算过程以保障安全性*
 >
-> 时间戳去掉最后三位的原因：该AccessToken在999s内均为有效，可以保证客户端在999s内上传文件均为合法
+> 时间戳去掉最后四位的原因：该AccessToken在9999s内均为有效，可以保证客户端在999s内上传文件均为合法
 
 
 
