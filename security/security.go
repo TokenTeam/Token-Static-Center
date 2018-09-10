@@ -6,9 +6,13 @@
 package security
 
 import (
-	"net/http"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"fmt"
 	"github.com/LuRenJiasWorld/Token-Static-Center/app"
+	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
 )
 
 // 过滤白名单以外的域名访问图片资源
@@ -83,6 +87,99 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 
 
 // 安全上传
-func SecureUploadFilter() {
+func SecureUploadFilter(next http.Handler) (http.Handler) {
+	handlerFunction := func(w http.ResponseWriter, r *http.Request) {
+		// 获取安全上传配置
+		secureUploadStatus, err := util.GetConfig("Security", "Token")
 
+		if err != nil {
+			util.ErrorLog("security", "读取安全上传配置失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
+			return
+		}
+
+		// 转换Interface到String
+		secureUploadStatus = secureUploadStatus.(string)
+
+		// 如果安全上传为启动
+		if secureUploadStatus == "on" {
+			// 获取安全配置-AppCode
+			appCodeInterface, err := util.GetConfig("Security", "AppCode")
+
+			if err != nil {
+				util.ErrorLog("security", "读取安全上传AppCode失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
+				return
+			}
+
+			// 转换Interface到StringSlice
+			appCodeStringSlice := appCodeInterface.([]string)
+
+			// 解析请求
+			// Step1. 获取形如/upload/blablabla-blabla.bla的URI
+			requestParam := r.RequestURI
+			// Step2. /upload/blablabla-blabla.bla => {"", "upload", "blablabla-blabla.bla"}
+			requestParams := strings.Split(requestParam, "/")
+			// Step3. blablabla-blabla.bla => {"blablabla-blabla", "bla"}
+			requestParams = strings.Split(requestParams[2], ".")
+			// Step4. blablabla-blabla => {"blablabla", "blabla"}
+			requestParams = strings.Split(requestParams[0], "-")
+
+			// appCode匹配状态
+			appCodeHitStatus := false
+
+			// 获取AccessToken
+			accessToken := requestParams[0]
+			// 获取Nonce
+			nonce := requestParams[1]
+
+			// 轮询已有AppCode，进行匹配计算
+			for i := 0; i < len(appCodeStringSlice); i++ {
+				// 转换字符为rune
+				appCodeRune := []rune(appCodeStringSlice[i])
+
+				// 检测是否满足64位长度，不满足，跳转到下一个AppCode
+				if strings.Count(appCodeStringSlice[i], "") != (64 + 1) {
+					continue
+				}
+
+				// 本地计算
+				// 获取AppCode前32位
+				appCodePrefix := string(appCodeRune[0:32])
+				// 获取AppCode后32位
+				appCodePostfix := string(appCodeRune[32:64])
+				// 获取时间戳（去掉后四位）
+				currentTimeStamp := time.Now().Unix()
+				currentTimeStampRune := []rune(strconv.FormatInt(currentTimeStamp, 10))
+				currentTimeStampString := string(currentTimeStampRune[0:6])
+				// 获取Salt
+				saltStringInterface, err := util.GetConfig("Security", "TokenSalt")
+				if err != nil {
+					util.ErrorLog("security", "读取Token验证SaltString失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
+					return
+				}
+				saltString := saltStringInterface.(string)
+
+				totalString := fmt.Sprintf("%s%s%s%s%s", appCodePrefix, currentTimeStampString, appCodePostfix, nonce, saltString)
+
+				totalStringByte := []byte(totalString)
+
+				currentAccessToken := util.GetMD5Hash(totalStringByte)
+
+				if currentAccessToken == accessToken {
+					appCodeHitStatus = true
+					break
+				}
+			}
+
+			// 如果都不匹配
+			if appCodeHitStatus == false {
+				app.ErrorPage(w, r, 403, "SecureUploadFilter", "存在非法授权，AccessToken校验失败，所发送的AccessToken为" + accessToken + "，nonce为" + nonce)
+				return
+			}
+		}
+
+		// 传递到下一个中间件
+		next.ServeHTTP(w, r)
+	}
+
+	return http.HandlerFunc(handlerFunction)
 }
