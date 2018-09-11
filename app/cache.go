@@ -95,11 +95,6 @@ func CacheGCHandler() () {
 // 获取缓存路径
 // 将缓存目录与缓存文件名进行拼接获取缓存路径
 func getCachePath(cacheFileName string) (path string, err error) {
-	// 检查文件名是否为空
-	if cacheFileName == "" {
-		return "", errors.New("图片资源缓存时获取缓存目录配置过程中遭遇致命错误：所请求的文件名为空！")
-	}
-
 	// 获取缓存目录配置文件
 	cachePathInterface, _ := util.GetConfig("Cache", "CacheDir")
 
