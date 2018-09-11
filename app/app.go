@@ -255,7 +255,17 @@ func ErrorPage(w http.ResponseWriter, r *http.Request, errorType int, errorModul
 	}
 
 	// 自动记录错误日志
-	errorLogger(r, errors.New("接收访问请求时出现错误，错误码：" + strconv.Itoa(errorType) + "，相关信息：" + errorMessage), errorModule)
+	switch r.Method {
+		case "GET":
+			errorLogger(r, errors.New("接收访问请求时出现错误，错误码：" + strconv.Itoa(errorType) + "，相关信息：" + errorMessage), errorModule)
+			break
+		case "POST":
+			errorLogger(r, errors.New("接收上传请求时出现错误，错误码：" + strconv.Itoa(errorType) + "，相关信息：" + errorMessage), errorModule)
+			break
+		default:
+			errorLogger(r, errors.New("接收方法为" + r.Method + "的请求时出现错误，错误码：" + strconv.Itoa(errorType) + "，相关信息：" + errorMessage), errorModule)
+	}
+
 
 	// 输出自定义错误码
 	w.WriteHeader(errorType)
