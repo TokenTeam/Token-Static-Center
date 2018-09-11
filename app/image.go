@@ -133,6 +133,20 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 			}
 		}
 	}
+
+	// 如果选项为文字水印
+	if watermarkText != "" && watermarkName == "" {
+		// 解析URI Encode之后的字符为可读文字
+		watermarkText, err = url.QueryUnescape(watermarkText)
+		if err != nil {
+			return nil, errors.New("解析URL中文字水印的文字时遭遇致命错误：" + err.Error())
+		}
+		fileData, err = TextWatermark(fileData, watermarkPosition, watermarkOpacity, watermarkSize, watermarkColor, watermarkText, watermarkStyle)
+		if err != nil {
+			return nil, errors.New("文字水印处理时遭遇致命错误：" + err.Error())
+		}
+	}
+
 // 写入图片文件
 func WriteImage(GUID string, fileStream []byte) (err error) {
 
