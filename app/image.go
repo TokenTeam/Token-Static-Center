@@ -153,6 +153,16 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 		return nil, errors.New("压缩图片时遭遇致命错误：" + err.Error())
 	}
 
+	// 转换图片格式
+	fileData, err = ImageReformat(fileData, targetFormat)
+	if err != nil {
+		return nil, errors.New("图片格式转换时遭遇致命错误：" + err.Error())
+	}
+
+	// 返回文件数据
+	return fileData, nil
+}
+
 // 写入图片文件
 func WriteImage(GUID string, fileStream []byte) (err error) {
 
