@@ -275,6 +275,15 @@ func DeformityDirectoryFilter(path string) (err error) {
 
 // 获取当前静态资源根目录
 // 便于读写文件的时候调用
-func getStaticRoot() (rootPath string) {
+func getStorageRoot() (rootPath string, err error) {
+	staticRootInterface, err := util.GetConfig("Global", "StorageDir")
 
+	if err != nil {
+		return "", errors.New("读取静态资源根目录配置时，出现错误：" + err.Error())
+	}
+
+	// 转换Interface到String
+	staticRootString := staticRootInterface.(string)
+
+	return staticRootString, nil
 }
