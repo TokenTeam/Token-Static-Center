@@ -23,13 +23,16 @@ func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream 
 	// 尝试读取文件
 	cacheFileStream, err = readFile(cachePath)
 	// 处理错误
-	// 文件不存在，或者文件为文件夹（不可能为文件夹，此前已经过滤过了）
+	// 文件不存在，或者文件为文件夹
 	if err != nil {
 		return false, nil, -1, nil
 	}
 
 	// 获取文件体积
 	cacheFileSize := bytes.Count(cacheFileStream, nil)
+
+	// 垃圾回收
+	CacheGCHandler()
 
 	return true, cacheFileStream, cacheFileSize, nil
 }
@@ -50,6 +53,9 @@ func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation 
 
 	// 计算文件大小
 	fileSizeByte = bytes.Count(cacheStream, nil)
+
+	// 垃圾回收
+	CacheGCHandler()
 
 	return cachePath, fileSizeByte, nil
 }
