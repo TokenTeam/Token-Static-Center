@@ -42,8 +42,72 @@ func WriteRawImage(filePath string, fileStream []byte) (err error) {
 }
 
 // 读取图片文件
-func ReadImage(GUID string, width uint32, format string, watermarkName string) (data []byte) {
-	// 根据GUID从数据库获取文件所在路径（相对）
+// 对参数有效性的校验已经由app.go完成，因此此处不校验参数有效性
+func ReadImage(GUID string, width uint, targetFormat string, quality uint,
+	watermarkName string, watermarkPosition uint, watermarkOpacity uint, watermarkSize uint,
+	watermarkText string, watermarkColor string, watermarkStyle string) (data []byte, err error) {
+	// 根据GUID从数据库获取文件所在路径（相对路径）
+	filePath := ""
+	year, month, md5, format, err := db.ReadImageDB(GUID)
+
+	// 如果不存在该图片，返回空白
+	if year == -2 || month == -2 {
+		return nil, errors.New("图片数据不存在")
+	}
+
+	// 解决诸如月份09变成9的bug（存储的时候是按照整数进行存储的）
+	monthString := strconv.Itoa(month)
+	if len(strconv.Itoa(month)) == 1 {
+		monthString = "0" + monthString
+	}
+
+	// 捕获致命错误
+	if err != nil {
+		return nil, errors.New("从数据库获取信息失败" + err.Error())
+	}
+	rootPath, err := getStorageRoot()
+	if err != nil {
+		return nil, errors.New("获取资源存储目录失败" + err.Error())
+	}
+
+	// 拼接文件的真实目录
+	filePath = filePath + rootPath + "image/" + strconv.Itoa(year) + "/" + monthString + "/" + GUID + "." + format
+
+	// 如果文件不存在
+	_, err = os.Stat(filePath)
+	if err != nil {
+		return nil, errors.New("图片状态检查时出现致命错误：" + err.Error())
+	}
+
+	// 读取文件
+	fileData, err := readFile(filePath)
+
+	if err != nil {
+		return nil, errors.New("图片读取时出现致命错误：" + err.Error())
+	}
+
+	// 检查校验码
+	fileHash := util.GetMD5Hash(fileData)
+
+	if fileHash != md5 {
+		return nil, errors.New("校验数据时出现错误，请检查文件是否已损毁")
+	}
+
+	// 如果转换格式不在支持范围内
+	accessableFileTypeInterface, err := util.GetConfig("Image", "AccessableFileType")
+
+	accessableFileTypeSlice := accessableFileTypeInterface.([]string)
+
+	flag := false
+	for each := range accessableFileTypeSlice {
+		if accessableFileTypeSlice[each] == targetFormat {
+			flag = true
+			break
+		}
+	}
+	if flag != true {
+		return nil, errors.New("格式" + targetFormat + "不受支持")
+	}
 
 }
 
