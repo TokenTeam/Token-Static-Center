@@ -62,6 +62,33 @@ func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation 
 
 // 缓存垃圾回收
 func CacheGCHandler() () {
+	// 获取上次缓存垃圾回收时间（秒）
+	intervalTimeSecond, err := db.ReadGC()
+	if err != nil {
+		util.ErrorLog("CacheGCHandler", "获取上次缓存垃圾回收时间失败，原因：" + err.Error(), "app->CacheGCHandler")
+	}
+
+	// 获取缓存配置
+	cacheIntervalTimeHourInterface, err := util.GetConfig("Cache", "GCInterval")
+	if err != nil {
+		util.ErrorLog("CacheGCHandler", "获取配置文件中的缓存垃圾回收时间间隔时出现错误，原因：" + err.Error(), "app->CacheGCHandler")
+	}
+	cacheIntervalTimeHour := cacheIntervalTimeHourInterface.(int)
+
+	cacheThresholdInterface, err := util.GetConfig("Cache", "GCInterval")
+	if err != nil {
+		util.ErrorLog("CacheGCHandler", "获取配置文件中的缓存垃圾回收数量阈值时出现错误，原因：" + err.Error(), "app->CacheGCHandler")
+	}
+	cacheThreshold := cacheThresholdInterface.(int)
+
+	// 获取缓存文件路径
+	cachePath, err := getCachePath("")
+
+	// 获取缓存文件列表
+	cacheFileList, err := filepath.Glob(cachePath + "*")
+
+	// 缓存文件数量
+	cacheFileCount := len(cacheFileList)
 
 }
 
