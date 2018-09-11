@@ -29,8 +29,8 @@ func ReadRawImage(filePath string) (fileStream []byte) {
 
 // 直接写入图片，不经过处理
 // 主要与缓存模块对接，不暴露给用户，不存在安全隐患
-func WriteRawImage(filePath string, fileStream []byte) (err error) {
-	err = writeFile(filePath, fileStream)
+func WriteRawImage(filePath string, fileStream []byte) {
+	err := writeFile(filePath, fileStream)
 
 	if err != nil {
 		util.ErrorLog("app", err.Error(), "app->WriteRawImage")
@@ -38,7 +38,6 @@ func WriteRawImage(filePath string, fileStream []byte) (err error) {
 	}
 
 	writeFileLogger(filePath, "WriteRawImage")
-	return
 }
 
 // 读取图片文件
