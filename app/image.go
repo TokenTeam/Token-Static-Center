@@ -147,6 +147,12 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 		}
 	}
 
+	// 压缩图片
+	fileData, err = ImageCompress(fileData, quality)
+	if err != nil {
+		return nil, errors.New("压缩图片时遭遇致命错误：" + err.Error())
+	}
+
 // 写入图片文件
 func WriteImage(GUID string, fileStream []byte) (err error) {
 
