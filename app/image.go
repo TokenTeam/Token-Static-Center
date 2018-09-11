@@ -115,6 +115,24 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 		return nil, errors.New("缩放图片时出现错误：" + err.Error())
 	}
 
+	// 如果选项为图片水印
+	if watermarkName != "" && watermarkText == "" {
+		// 检测水印是否存在
+		watermarkPath := rootPath + "watermark/" + watermarkName + ".png"
+		_, err := os.Stat(watermarkPath)
+
+		// 如果水印不存在，不添加水印
+		if err != nil {
+			util.WarningLog("app", "处理图片时发生普通错误：所请求的水印" + watermarkPath + "不存在", "app->ReadRawImage")
+		} else {
+			// 添加水印
+			watermarkFile, _ := ioutil.ReadFile(watermarkPath)
+			fileData, err = ImageWatermark(fileData, watermarkFile, watermarkPosition, watermarkOpacity, watermarkSize)
+			if err != nil {
+				return nil, errors.New("图片水印处理时遭遇致命错误：" + err.Error())
+			}
+		}
+	}
 // 写入图片文件
 func WriteImage(GUID string, fileStream []byte) (err error) {
 
