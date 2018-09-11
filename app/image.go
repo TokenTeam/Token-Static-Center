@@ -109,7 +109,12 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 		return nil, errors.New("格式" + targetFormat + "不受支持")
 	}
 
-}
+	// 图片处理（默认按比例缩放）
+	fileData, err = ImageResize(fileData, int(width), true)
+
+	if err != nil {
+		return nil, errors.New("缩放图片时出现错误：" + err.Error())
+	}
 
 // 写入图片文件
 func WriteImage(GUID string, fileStream []byte) (err error) {
