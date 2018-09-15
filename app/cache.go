@@ -13,6 +13,9 @@ import (
 
 // 缓存获取
 func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream []byte, fileSizeByte int, err error) {
+	// 垃圾回收
+	CacheGCHandler()
+
 	// 获取缓存路径
 	cachePath, err := getCachePath(cacheFileName)
 	if err != nil {
@@ -31,14 +34,14 @@ func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream 
 	// 获取文件体积
 	cacheFileSize := bytes.Count(cacheFileStream, nil)
 
-	// 垃圾回收
-	CacheGCHandler()
-
 	return true, cacheFileStream, cacheFileSize, nil
 }
 
 // 缓存写入
 func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation string, fileSizeByte int, err error) {
+	// 垃圾回收
+	CacheGCHandler()
+
 	// 获取缓存路径
 	cachePath, err := getCachePath(cacheFileName)
 	if err != nil {
@@ -53,9 +56,6 @@ func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation 
 
 	// 计算文件大小
 	fileSizeByte = bytes.Count(cacheStream, nil)
-
-	// 垃圾回收
-	CacheGCHandler()
 
 	return cachePath, fileSizeByte, nil
 }
