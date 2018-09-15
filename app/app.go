@@ -6,16 +6,26 @@
 package app
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/LuRenJiasWorld/Token-Static-Center/db"
 	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/satori/go.uuid"
 	"html/template"
+	"io"
 	"mime"
 	"net/http"
+	"path"
 	"strconv"
 	"strings"
 	"time"
 )
+
+// 全局变量：上传资源的AppCode（用于多模块共享，便于存储AppCode到数据库）
+// 默认为debug_mode，因为debug模式开启的时候不会进行AppCode检查
+var CurrentUploadAppCode string
 
 // 首页
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -261,7 +271,98 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 
 // 图像上传
 func ImageUploadHandler(w http.ResponseWriter, r *http.Request) {
+	// 记录上传请求
+	accessLogger(r, "ImageUploadHandler")
 
+	// 记录执行开始时间，用于执行速率统计
+	startTime := time.Now()
+
+	// 读取配置文件
+	// 最大宽度
+	maxWidthInterface, err1 := util.GetConfig("Image", "MaxWidth")
+	maxWidth, err2 := strconv.Atoi(maxWidthInterface.(string))
+
+	// 可上传文件后缀名类型
+	uploadableFileTypeInterface, err3 := util.GetConfig("Image", "UploadableFileType")
+	uploadableFileTypeStringSlice := uploadableFileTypeInterface.([]string)
+
+	// 存储文件类型
+	storageFileTypeInterface, err4 := util.GetConfig("Image", "StorageFileType")
+	storageFileType := storageFileTypeInterface.(string)
+
+	// 压缩等级
+	compressLevelInterface, err5 := util.GetConfig("Image", "JpegCompressLevel")
+	compressLevel := compressLevelInterface.(int)
+
+	// 最大文件体积
+	maxImageFileSizeInterface, err6 := util.GetConfig("Image", "MaxImageFileSize")
+	maxImageFileSize := maxImageFileSizeInterface.(int)
+
+	if err1 != nil || err2 != nil || err3 != nil || err4 != nil || err5 != nil || err6 != nil {
+		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -1, "图像上传过程中读取配置文件时出现致命错误，请检查配置文件是否完整！")
+		return
+	}
+
+	// 解析表单
+	uploadFile, handle, err := r.FormFile("image")
+	if err != nil {
+		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -2, "解析表单时出现错误，请检查表单是否正确！")
+		return
+	}
+	defer uploadFile.Close()
+
+	// 获取文件
+	imageFileStream := bytes.NewBuffer(nil)
+	_, err = io.Copy(imageFileStream, uploadFile)
+	if err != nil {
+		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -3, "从表单读取文件时出现错误！")
+		return
+	}
+
+	// 检查文件大小是否超过限额
+	fileSizeMB := handle.Size / (1024 * 1024)
+	if int(fileSizeMB) > maxImageFileSize {
+		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -4, "文件大小超过限制，最大允许" + strconv.Itoa(maxImageFileSize) + "MB，上传文件大小为" + strconv.Itoa(int(fileSizeMB)) + "MB")
+		return
+	}
+
+	// 检查文件格式是否在配置文件中
+	fileFormat := strings.ToLower(path.Ext(handle.Filename))
+	tempSlice := strings.Split(fileFormat, ".")
+	fileFormat = tempSlice[1]
+
+	formatHitStatus := false
+	for i := 0; i < len(uploadableFileTypeStringSlice); i++ {
+		if uploadableFileTypeStringSlice[i] == fileFormat {
+			formatHitStatus = true
+			break
+		}
+	}
+
+	if formatHitStatus == false {
+		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -5, "你上传的格式" + fileFormat + "不受支持！")
+		return
+	}
+
+	// 生成GUID
+	guidObj := uuid.NewV4()
+	guid := fmt.Sprintf("%s", guidObj)
+
+	// 写入图像
+	err = WriteImage(guid, imageFileStream.Bytes(), storageFileType, compressLevel, maxWidth)
+	if err != nil {
+		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -6, "保存图像失败：" + err.Error())
+		return
+	}
+
+	//fmt.Println(guid, bytes.Count(imageFileStream.Bytes(), nil), storageFileType, compressLevel, maxWidth)
+
+	// 返回数据
+	JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", 0, guid)
+
+	// 记录执行时间
+	elapsedTime := time.Since(startTime)
+	util.OperationLog("app", "执行图片上传请求成功，耗时" + strconv.FormatInt(int64(elapsedTime) / 1000000, 10) + "ms", "app->ImageFetchHandler")
 }
 
 // 错误页面
