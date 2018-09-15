@@ -58,8 +58,8 @@ type Config struct {
 	Cache struct {
 		Status string				`yaml:"status"`
 		CacheDir string				`yaml:"cache-dir"`
-		GCInterval string			`yaml:"gc-interval"`
-		GCThreshold uint32			`yaml:"gc-threshold"`
+		GCInterval int			`yaml:"gc-interval"`
+		GCThreshold int			`yaml:"gc-threshold"`
 	}
 }
 
