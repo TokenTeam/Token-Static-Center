@@ -37,12 +37,11 @@ type Config struct {
 
 	Image struct {
 		MaxWidth string				`yaml:"max-width"`
-		MaxHeight string			`yaml:"max-height"`
 		UploadableFileType []string	`yaml:"uploadable-file-type"`
 		AccessableFileType []string `yaml:"accessable-file-type"`
-		StorageFileType string		`yaml:"static-file-type"`
-		JpegCompressLevel uint32	`yaml:"jpeg-compress-level"`
-		MaxImageFileSize uint32		`yaml:"max-image-file-size"`
+		StorageFileType string		`yaml:"storage-file-type"`
+		JpegCompressLevel int		`yaml:"jpeg-compress-level"`
+		MaxImageFileSize int		`yaml:"max-image-file-size"`
 	}
 
 	Security struct {
