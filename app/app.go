@@ -66,6 +66,25 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 		tempSlice []string
 	)
 
+	// 检查水印信息中是否含有非法字符
+	// 非法字符列表：
+	// - #
+	if strings.Contains(requestParam, "#") {
+			ErrorPage(w, r, 404, "ImageFetchHandler", "该请求含有非法字符，被安全模块拦截")
+			return
+	}
+
+	// 检查URL信息中是否缺少必须含有的字符
+	// 必须含有的字符列表
+	// - .
+	// - -
+	// 避免存在example.com/images/blabla#blabla.bla，#号截断其后文字造成后续字符串裁切出现索引失败的状况
+	if strings.Contains(requestParam, ".") != true ||
+		strings.Contains(requestParam, "-") != true {
+			ErrorPage(w, r, 404, "ImageFetchHandler", "该请求未包含必需字符，被安全模块拦截")
+			return
+	}
+
 	// Step1: /image/bla-bla-bla-bla.bla => {"", "image", "bla-bla-bla-bla.bla"}
 	requestPath = strings.Split(requestParam, "/")
 	// Step2: bla-bla-bla-bla.bla => {"bla", "bla", "bla", "bla.bla"}
