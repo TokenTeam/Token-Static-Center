@@ -10,9 +10,10 @@ import (
 	"time"
 )
 
+// 日志结构
 type log struct {
 	log_type string				// 日志类别（access、operation、warning、error）
-	log_time time.Time			// 日志时间（毫秒）
+	log_time time.Time			// 日志时间
 	log_module string			// 日志所记录的模块
 	log_trace string			// 日志相关操作涉及到的路径
 	log_content string			// 日志所返回相关信息
