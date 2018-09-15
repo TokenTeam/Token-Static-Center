@@ -293,6 +293,35 @@ func ErrorPage(w http.ResponseWriter, r *http.Request, errorType int, errorModul
 	page.Execute(w, nil)
 }
 
+// 返回Json数据(直接输出到浏览器)
+// errNumber 错误码，如果错误码表示错误，值为负数，会自动计入错误日志中
+func JsonReturn(w http.ResponseWriter, r *http.Request, module string, trace string, errNumber int, message string) {
+
+	// 返回Json数据格式
+	type Json struct{
+		Errno int			`json:"error_code"`
+		Message string		`json:"message"`
+	}
+
+	data := Json{errNumber, message}
+
+	jsonDataByte, err := json.Marshal(data)
+
+	if err != nil {
+		util.ErrorLog("JsonReturn", "生成Json数据时出现错误：" + err.Error(), "app->JsonReturn")
+		return
+	}
+
+	// 记录错误日志
+	if errNumber < 0 {
+		util.ErrorLog(module, message, trace)
+	}
+
+	w.Write(jsonDataByte)
+
+	return
+}
+
 // 直接返回防盗链图片
 func AntiLeechImage(w http.ResponseWriter, r *http.Request) {
 	// 获取静态资源
