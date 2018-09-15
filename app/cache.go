@@ -6,9 +6,13 @@
 package app
 
 import (
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
-	"errors"
 	"bytes"
+	"errors"
+	"github.com/LuRenJiasWorld/Token-Static-Center/db"
+	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"os"
+	"path/filepath"
+	"strconv"
 )
 
 // 缓存获取
@@ -90,6 +94,21 @@ func CacheGCHandler() () {
 	// 缓存文件数量
 	cacheFileCount := len(cacheFileList)
 
+	// 判断条件进行缓存清除
+	if cacheFileCount >= cacheThreshold || intervalTimeSecond >= cacheIntervalTimeHour * 3600 {
+		for i := range cacheFileList {
+			err = os.Remove(cacheFileList[i])
+			if err != nil {
+				util.WarningLog("CacheGCHandler", "缓存文件垃圾回收时出现错误：文件" + cacheFileList[i] + "无法删除，错误信息为：" + err.Error(), "app->CacheGCHandler")
+			}
+		}
+
+		// 日志记录
+		util.OperationLog("CacheGCHandler", "缓存已清除，总共清除缓存数量：" + strconv.Itoa(cacheFileCount), "app->CacheGCHandler")
+
+		// 更新垃圾回收数据库
+		db.UpdateGC(cacheFileCount)
+	}
 }
 
 // 获取缓存路径
