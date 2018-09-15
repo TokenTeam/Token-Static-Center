@@ -75,7 +75,7 @@ func CacheGCHandler() () {
 	}
 	cacheIntervalTimeHour := cacheIntervalTimeHourInterface.(int)
 
-	cacheThresholdInterface, err := util.GetConfig("Cache", "GCInterval")
+	cacheThresholdInterface, err := util.GetConfig("Cache", "GCThreshold")
 	if err != nil {
 		util.ErrorLog("CacheGCHandler", "获取配置文件中的缓存垃圾回收数量阈值时出现错误，原因：" + err.Error(), "app->CacheGCHandler")
 	}
