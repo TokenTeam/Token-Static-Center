@@ -1,8 +1,27 @@
 # Token-Static-Center
 
 > Token团队静态资源引擎
+>
+> LiuFuXin @ Token Team 2018 <loli@lurenjia.in>
+>
+> **该文档为接入文档，供各业务接入使用**
+>
+> - 如需运维部署文档，请参考同目录下OPS.md
+> - 如需开发、维护辅助文档，请参考同目录下CONTRIBUTE.md
+> - 如需查看开发历史、待实现功能，请参考同目录下CHANGELOG.md
+
+
+
+## 接入指南
+
+1. 找到配置文件中的`security`项
+2. 将类似于`https://web.wutnews.net/`的完整域名（必须以/结尾，不包含子目录）加入`white-list`配置中
+3. 使用任意方式（脚本、在线、滚键盘皆可）生成一段64位含大小写数字的AppCode，加入`app-code`配置中，类似于`6Jukw2pPvR0zWT3qJP3mKNYI1INfiQsqYkdGM9OPltW3JlRSBjPoFIwYAdq2XuKt`
+4. 重启Token-Static-Center即可生效
+5. 将AppCode引入需要接入的业务系统，并按照后文中的AccessToken计算方法，对AccessToken进行生成
 
 ## 请求格式
+
 ### 获取图片资源
 #### 请求图片（带图片水印）
 http://example.com/image/`GUID`-`width`-`quality`-`watermarkName`-`watermarkPosition`-`watermarkOpacity`-`watermarkSize`.`fileExtension`
@@ -23,7 +42,7 @@ http://example.com/image/`GUID`-`width`-`quality`-`watermarkName`-`watermarkPosi
 - watermarkSize 水印宽度（0-100，相对于所请求图片的宽度占百分比）
 - fileExtension 图片格式，以配置文件内所支持的格式列表为准
 
-> 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-wutnews-1-30-15.jpg 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印名称为wutnews，水印位置为左上角，水印透明度为30%透明，水印大小为15%宽度（相对于图片宽度）的JPG格式图片资源
+> 例：http://static-img.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-wutnews-1-30-15.jpg 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印名称为wutnews，水印位置为左上角，水印透明度为30%透明，水印大小为15%宽度（相对于图片宽度）的JPG格式图片资源
 **注意，对于GIF动图，无法添加水印**
 
 ------
@@ -38,7 +57,7 @@ http://example.com/image/`GUID`-`width`-`quality`.`fileExtension`
 - quality 图片质量（0-100，越高质量越好，通常只对jpg格式有效）
 - fileExtension 图片格式，以配置文件内所支持的格式列表为准
 
-> 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80.jpg 即为请求GUID为e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，不带水印的JPG格式图片资源
+> 例：http://static-img.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80.jpg 即为请求GUID为e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，不带水印的JPG格式图片资源
 
 ------
 
@@ -64,7 +83,7 @@ http://example.com/image/`GUID`-`width`-`quality`-`text`-`fontPosition`-`fontOpa
 
 **切记，text参数内不允许包含特殊符号（只允许包含@符号），否则会造成转义错误**
 
-> 例：http://static2.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-%40Token+Team-1-20-30-FFFFFF-regular.jpg 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印文本为@Token Team，水印位置为左上角，水印透明度为20%透明，水印字体大小为30px，水印颜色为FFFFFF，水印字体样式为普通字体样式的JPG格式图片资源
+> 例：http://static-img.wutnews.net/image/e44378ac-0237-4331-aaf2-63b8818e5c34-300-80-%40Token+Team-1-20-30-FFFFFF-regular.jpg 即为请求GUID为 e44378ac-0237-4331-aaf2-63b8818e5c34，宽度为300，质量为80，水印文本为@Token Team，水印位置为左上角，水印透明度为20%透明，水印字体大小为30px，水印颜色为FFFFFF，水印字体样式为普通字体样式的JPG格式图片资源
 
 
 
@@ -84,13 +103,13 @@ http://example.com/upload/`accessToken`-`Nonce`.`fileFormat`
 
 返回数据为JSON格式：
 
-> 例：{"guid":"e44378ac-0237-4331-aaf2-63b8818e5c34", "status": "ok"}
+> 例：{"error_code": 0, "message": "GUID"}
 
 如果存在错误：
 
-> 例：{"guid":"", "status":"error"}
+> 例：{"error_code": 小于0的整数, "message": "错误相关提示"}
 
-### AccessToken计算方法：
+### AccessToken计算方法
 
 md5(AppCode前32位数+时间戳去掉最后四位数+AppCode后32位数+随机Nonce+token123)
 
@@ -121,3 +140,8 @@ Nonce为16位随机小写字母
 ### 500错误
 
 - 服务器内部错误，原因多样，请记录下出现错误的时间，结合日志进行错误排查
+
+### 服务器不响应
+
+- 服务中断（建议访问其他资源检查是否存在服务中断情况）
+- 参数有误（请根据前面的请求格式进行）
