@@ -33,10 +33,9 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	page, err := template.ParseFiles("template/homepage.html")
 
 	if err != nil {
-		errorLogger(r, err)
+		errorLogger(r, err, "HomePage")
 		return
 	}
-
 
 	accessLogger(r, "HomePage")
 
