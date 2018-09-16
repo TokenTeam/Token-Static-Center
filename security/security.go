@@ -68,7 +68,7 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 				switch antiLeechWarning {
 					case "on":
 						app.AntiLeechImage(w, r)
-						break
+						return
 					case "off":
 						app.ErrorPage(w, r, 403, "WhiteListFilter", "触发反盗链机制")
 						return
