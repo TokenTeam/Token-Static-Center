@@ -1,16 +1,21 @@
 // Token-Static-Center
-// 图片处理模块
-// 负责图片的获取、存储、处理
+// 图片读写模块
+// 负责图片的获取、存储
 // LiuFuXin @ Token Team 2018 <loli@lurenjia.in>
 
 package app
 
 import (
-	"os"
+	"bytes"
+	"errors"
+	"github.com/LuRenJiasWorld/Token-Static-Center/db"
 	"github.com/LuRenJiasWorld/Token-Static-Center/util"
 	"io/ioutil"
-	"errors"
+	"net/url"
+	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // 直接读取图片，不经过处理
