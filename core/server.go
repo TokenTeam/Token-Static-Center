@@ -57,9 +57,9 @@ func NewServer() (vestigoRouter *vestigo.Router, err error) {
 
 	router.Get("/", app.HomePage)
 
-	router.Get("/image/:filename", imageFileHandler.ThenFunc(app.ImageFetchHandler).(http.HandlerFunc))
+	router.Get("/image/:filename", imageDownloadHandler.ThenFunc(app.ImageFetchHandler).(http.HandlerFunc))
 
-	router.Post("/upload/:parameter", imageFileHandler.ThenFunc(app.ImageUploadHandler).(http.HandlerFunc))
+	router.Post("/upload/:parameter", imageUploadHandler.ThenFunc(app.ImageUploadHandler).(http.HandlerFunc))
 
 	// 防止upload方法被误访问
 	router.Get("/upload/:parameter", func(w http.ResponseWriter, r *http.Request) {
