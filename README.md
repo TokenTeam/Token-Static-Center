@@ -24,7 +24,7 @@
 
 ### 获取图片资源
 #### 请求图片（带图片水印）
-http://example.com/image/`GUID`-`width`-`quality`-`watermarkName`-`watermarkPosition`-`watermarkOpacity`-`watermarkSize`.`fileExtension`
+http://example.com/image/GUID-width-quality-watermarkName-watermarkPosition-watermarkOpacity-watermarkSize.fileExtension
 
 共计八个可变参数：
 
@@ -48,7 +48,7 @@ http://example.com/image/`GUID`-`width`-`quality`-`watermarkName`-`watermarkPosi
 ------
 
 #### 请求图片（不带任何水印）~~（无印良品）~~
-http://example.com/image/`GUID`-`width`-`quality`.`fileExtension`
+http://example.com/image/GUID-width-quality.fileExtension
 
 共计四个可变参数：
 
@@ -63,7 +63,7 @@ http://example.com/image/`GUID`-`width`-`quality`.`fileExtension`
 
 #### 请求图片（带文字水印）
 
-http://example.com/image/`GUID`-`width`-`quality`-`text`-`fontPosition`-`fontOpacity`-`fontSize`-`fontColor`-`fontStyle`.`fileExtension`
+http://example.com/image/GUID-width-quality-text-fontPosition-fontOpacity-fontSize-fontColor-fontStyle.fileExtension
 
 共计十个可变参数：
 
@@ -89,7 +89,7 @@ http://example.com/image/`GUID`-`width`-`quality`-`text`-`fontPosition`-`fontOpa
 
 ### 上传图片资源
 
-http://example.com/upload/`accessToken`-`Nonce`.`fileFormat`
+http://example.com/upload/accessToken-Nonce.fileFormat
 
 方法：POST表单，其中
 
