@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"flag"
 	"strconv"
-	"github.com/LuRenJiasWorld/Token-Static-Center/core"
+	"github.com/TokenTeam/Token-Static-Center/core"
 	"net/http"
 	"fmt"
 	"gopkg.in/gographics/imagick.v2/imagick"

@@ -8,7 +8,7 @@ package db
 import (
 	"database/sql"
 	"errors"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"strconv"
 	_ "github.com/go-sql-driver/mysql"
 )

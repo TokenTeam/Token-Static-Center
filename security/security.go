@@ -7,8 +7,8 @@ package security
 
 import (
 	"fmt"
-	"github.com/LuRenJiasWorld/Token-Static-Center/app"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/app"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"net/http"
 	"strconv"
 	"strings"

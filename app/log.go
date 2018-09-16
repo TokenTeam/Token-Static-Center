@@ -7,7 +7,7 @@ package app
 
 import (
 	"net/http"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/util"
 )
 
 // 记录访问信息

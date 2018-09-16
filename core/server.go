@@ -7,12 +7,12 @@ package core
 
 import (
 	"github.com/husobee/vestigo"
-	"github.com/LuRenJiasWorld/Token-Static-Center/app"
+	"github.com/TokenTeam/Token-Static-Center/app"
 	"github.com/justinas/alice"
 	"net/http"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"errors"
-	"github.com/LuRenJiasWorld/Token-Static-Center/security"
+	"github.com/TokenTeam/Token-Static-Center/security"
 )
 
 // 初始化服务器

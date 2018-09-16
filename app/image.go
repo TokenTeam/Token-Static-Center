@@ -8,8 +8,8 @@ package app
 import (
 	"bytes"
 	"errors"
-	"github.com/LuRenJiasWorld/Token-Static-Center/db"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/db"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"io/ioutil"
 	"net/url"
 	"os"

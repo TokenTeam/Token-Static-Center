@@ -9,7 +9,7 @@ import (
 	"errors"
 	"strconv"
 	"database/sql"
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	_ "github.com/mattn/go-sqlite3"
 )
 

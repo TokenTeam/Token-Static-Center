@@ -6,7 +6,7 @@
 package db
 
 import (
-	"github.com/LuRenJiasWorld/Token-Static-Center/util"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"errors"
 	"time"
 	"strconv"
