@@ -164,7 +164,19 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 }
 
 // 写入图片文件
-func WriteImage(GUID string, fileStream []byte) (err error) {
+func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompressLevel int, maxWidth int) (err error) {
+	// 在数据库里面检查GUID是否有重复
+	year, month, md5, _, err := db.ReadImageDB(GUID)
+	// err不为空的情况有可能是数据本身就不存在（正好满足写入图片的需求）
+	// 因此需要结合year和month进行判断
+	if err != nil && year > 0 && month > 0 {
+		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：" + err.Error())
+	}
+
+	// 如果有重复，报错，交给业务引擎返回重试信息（基本不可能，但是还是要检测一下）
+	if md5 != "" {
+		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：GUID重复，无法保存数据，请使用不重复的GUID替代之！")
+	}
 
 }
 
