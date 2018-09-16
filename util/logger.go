@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+// 写入到文件的日志缓存
+var logCache [10]string
+
 // 日志结构
 type log struct {
 	log_type string				// 日志类别（access、operation、warning、error）
