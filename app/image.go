@@ -178,6 +178,25 @@ func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompres
 		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：GUID重复，无法保存数据，请使用不重复的GUID替代之！")
 	}
 
+	// 图片尺寸预压缩（按比例预压缩）
+	if maxWidth != 0 {
+		fileStream, err = ImageResize(fileStream, maxWidth, true)
+		if err != nil {
+			return errors.New("写入图片过程中对图片尺寸进行预压缩时出现致命错误：" + err.Error())
+		}
+	}
+
+	// 图片质量预压缩
+	if preCompressLevel != 0 {
+		compressValue := (10 - preCompressLevel) * 10
+		ImageCompress(fileStream, uint(compressValue))
+	}
+
+	// 转换成配置文件中的默认格式
+	fileStream, err = ImageReformat(fileStream, defaultFormat)
+	if err != nil {
+		return errors.New("写入图片过程中转换格式时出现致命错误：" + err.Error())
+	}
 }
 
 
