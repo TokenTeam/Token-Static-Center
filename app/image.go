@@ -197,6 +197,52 @@ func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompres
 	if err != nil {
 		return errors.New("写入图片过程中转换格式时出现致命错误：" + err.Error())
 	}
+
+	// 生成待存储文件路径
+	storagePath, err := getStorageRoot()
+	if err != nil {
+		return errors.New("写入图片过程中获取存储根目录时出现致命错误：" + err.Error())
+	}
+	// 拼接方式：根目录 + image + 年 + 月 + GUID + . + 格式
+	t := time.Now()
+	year = t.Year()
+	month = int(t.Month())
+	// 解决诸如月份09变成9的bug（存储的时候是按照整数进行存储的）
+	monthString := strconv.Itoa(month)
+	if len(strconv.Itoa(month)) == 1 {
+		monthString = "0" + monthString
+	}
+	filePath := storagePath + "image" + "/" + strconv.Itoa(year) + "/" + monthString + "/" + GUID + "." + defaultFormat
+
+	// 生成校验码
+	md5 = util.GetMD5Hash(fileStream)
+
+	// 生成文件大小
+	finalFileSizeByte := bytes.Count(fileStream, nil)
+
+	// 存储文件
+	err = writeFile(filePath, fileStream)
+	if err != nil {
+		return errors.New("写入图片过程中存储文件时出现致命错误：" + err.Error())
+	}
+
+	// 写入文件日志
+	writeFileLogger(filePath, "WriteImage")
+
+	// 写入数据库
+	// 解决debug模式下AppCode为空，导致数据库插入失败的BUG
+	if CurrentUploadAppCode == "" {
+		CurrentUploadAppCode = "debug_mode"
+	}
+	err = db.WriteImageDB(GUID, uint64(finalFileSizeByte), defaultFormat, CurrentUploadAppCode, md5)
+	if err != nil {
+		return errors.New("写入图片过程中写入数据库时出现致命错误：" + err.Error())
+	}
+
+	// 报告保存成功状态
+	util.OperationLog("WriteImage", "保存图片成功，保存路径为" + filePath, "app->WriteImage")
+
+	return nil
 }
 
 
