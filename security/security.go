@@ -165,6 +165,8 @@ func SecureUploadFilter(next http.Handler) (http.Handler) {
 				currentAccessToken := util.GetMD5Hash(totalStringByte)
 
 				if currentAccessToken == accessToken {
+					// 输出当前AppCode，用于存储到app模块，便于存储当前业务信息到数据库
+					app.CurrentUploadAppCode = appCodeStringSlice[i]
 					appCodeHitStatus = true
 					break
 				}
