@@ -72,7 +72,9 @@ http://example.com/image/`GUID`-`width`-`quality`-`text`-`fontPosition`-`fontOpa
 
 http://example.com/upload/`accessToken`-`Nonce`.`fileFormat`
 
-方法：POST表单，其中input type="file" name="image"
+方法：POST表单，其中
+
+- input type="file" name="image"
 
 共计三个可变参数：
 
