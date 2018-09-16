@@ -45,13 +45,14 @@ func NewServer() (vestigoRouter *vestigo.Router, err error) {
 			imageUploadHandler = alice.New()
 			break
 		case "off":
-			imageFileHandler = alice.New(security.WhiteListFilter)
-			// 上传文件路由：Token校验->文件上传
-			// accessToken校验：检查 md5(AppCode前32位+时间戳去掉最后三位+AppCode后32位+Nonce+"token123")是否通过校验
-			// 校验规则：客户端传递accessToken、Nonce给服务器，服务器对所有AppCode进行检查->根据服务器端时间戳计算accessToken->与客户端accessToken进行对比
+			// 获取文件路由：白名单校验->文件获取
+			imageDownloadHandler = alice.New(security.WhiteListFilter)
+			// 上传文件路由：白名单校验->Token校验->文件上传
+			imageUploadHandler = alice.New(security.WhiteListFilter, security.SecureUploadFilter)
 			break
 		default:
 			util.ErrorLog("server", "调试模式配置错误！请检查配置文件！", "server->debugStatus")
+			return
 	}
 
 	router.Get("/", app.HomePage)
