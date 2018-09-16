@@ -168,3 +168,50 @@ func IsDebug() (status bool) {
 			return false
 	}
 }
+
+// 获取日志状态
+func logStatus() (accessLogStatusResult bool, operationLogStatusResult bool, warningLogStatusResult bool, errorLogStatusResult bool) {
+	// 读取全部配置文件
+	accessLogStatus, err1 := GetConfig("Global", "Log", "LogAccess")
+	operationLogStatus, err2 := GetConfig("Global", "Log", "LogOperation")
+	warningLogStatus, err3 := GetConfig("Global", "Log", "LogWarning")
+	errorLogStatus, err4 := GetConfig("Global", "Log", "LogError")
+
+	// 此处错误捕获不完全原因：日志模块本身出现错误，逐层抛出错误并记录日志也无法实现
+	// 但是会直接返回true，也就是默认记录当前项的日志
+	// 避免由于配置文件错误导致日志未能记录的风险
+	if err1 != nil || err2 != nil || err3 != nil || err4 != nil {
+		return true, true, true, true
+	}
+
+	// 转换Interface到String
+	accessLogStatusString := accessLogStatus.(string)
+	operationLogStatusString := operationLogStatus.(string)
+	warningLogStatusString := warningLogStatus.(string)
+	errorLogStatusString := errorLogStatus.(string)
+
+	// 默认均为关闭状态
+	accessLogStatusResult = false
+	operationLogStatusResult = false
+	warningLogStatusResult = false
+	errorLogStatusResult = false
+
+	// 判断配置状态，进行对应项的开启
+	if accessLogStatusString == "on" {
+		accessLogStatusResult = true
+	}
+
+	if operationLogStatusString == "on" {
+		operationLogStatusResult = true
+	}
+
+	if warningLogStatusString == "on" {
+		warningLogStatusResult = true
+	}
+
+	if errorLogStatusString == "on" {
+		errorLogStatusResult = true
+	}
+
+	return accessLogStatusResult, operationLogStatusResult, warningLogStatusResult, errorLogStatusResult
+}
