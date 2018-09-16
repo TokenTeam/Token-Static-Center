@@ -3,7 +3,7 @@ global:
   # 调试模式 输出调试信息到控制台，关闭所有安全配置，关闭缓存
   debug: off
 
-  # 默认监听ip地址
+  # 默认监听端口
   port: 8888
 
   # 静态资源存储目录
@@ -29,7 +29,8 @@ global:
     # 数据库资源
     # sqlite填写文件位置
     # MySQL填写user:password@tcp(localhost:5555)/dbname?charset=utf8
-    db-resource: /Users/lurenjiasworld/Documents/Coding/Golang/src/github.com/LuRenJiasWorld/Token-Static-Center/static/db/data.db
+    db-resource: /Users/lurenjiasworld/Documents/Coding/Golang/src/github.com/LuRenJiasWorld/Token-Static-Center/static/db/token-static-center.db
+    # db-resource: root:root@tcp(localhost:3306)/token-static-center?charset=utf8
 
 
 # 图片配置
@@ -89,7 +90,7 @@ security:
   # 防盗链配置
   anti-leech:
     # 防盗链状态
-    status: on
+    status: off
     # 返回防盗链警告图片，位于静态资源存储目录others/anti-leech.jpg（如果关闭，返回403）
     show-warning: on
 
@@ -106,4 +107,4 @@ cache:
   gc-interval: 24
 
   # 缓存数量清理阈值
-  gc-threshold: 5000
+  gc-threshold: 10000
