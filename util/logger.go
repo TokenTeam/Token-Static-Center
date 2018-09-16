@@ -116,13 +116,84 @@ func consoleOutput(logLine log) {
 	if IsDebug() == true {
 		fmt.Printf("%c[%d;%d;%dm [%s] @ %s (%s) %s (相关路径: %s) %c[0m\n", 0x1B, consoleEffect, backGroundColor, foreGroundColor, logLine.log_type, logLine.log_module, logLine.log_time, logLine.log_content, logLine.log_trace, 0x1B)
 	}
-
-	return
 }
 
 // 记录日志
-func fileOutput() {
-	// TODO: 记录日志到文件
+// 此处应用全局变量实现缓冲区机制
+func fileOutput(logLine log) {
+	// 检查缓冲区是否已满
+	logCacheCapacity := len(logCache)
+	logCacheCount := 0
+	logCachePointer := 0
+	for each := range logCache {
+		if logCache[each] != "" {
+			logCacheCount = logCacheCount + 1
+		} else {
+			logCachePointer = each
+			break
+		}
+	}
+
+	// 如果缓冲区未满，直接写入日志到缓冲区
+	if logCacheCount < logCacheCapacity {
+		logCache[logCachePointer] = fmt.Sprintf("[%s] @ %s (%s) %s (相关路径: %s)", logLine.log_type, logLine.log_module, logLine.log_time, logLine.log_content, logLine.log_trace)
+		return
+	}
+
+	// 如果缓冲区已满，写入到文件
+	if logCacheCount == logCacheCapacity {
+		// 获取日志存储目录
+		logDir, err := GetConfig("Global", "Log", "LogDir")
+		if err != nil {
+			fmt.Println("【严重警告】日志记录机制失效：获取日志存储目录失败：" + err.Error())
+			return
+		}
+		logDirString := logDir.(string)
+
+		// 获取当前年月日
+		t := time.Now()
+		currentDate := t.Format("2006-01-02")
+
+		// 拼接文件路径
+		// 文件路径样式通常为logDirString + currentDate + ".log"
+		logFilePath := logDirString + currentDate + ".log"
+
+		// 检查文件是否存在
+		_, err = os.Stat(logFilePath)
+
+		// 如果文件不存在，新建文件
+		if err != nil {
+			createFileHandle, err := os.OpenFile(logFilePath, os.O_CREATE, 0644)
+			defer createFileHandle.Close()
+			if err != nil {
+				fmt.Println("【严重警告】日志记录机制失效：新建日志文件" + logFilePath + "失败：" + err.Error())
+				return
+			}
+		}
+
+		// 从缓冲区写入日志到文件
+		fileHandle, err := os.OpenFile(logFilePath, os.O_WRONLY|os.O_APPEND, 0644)
+		defer fileHandle.Close()
+		if err != nil {
+			fmt.Println("【严重警告】日志记录机制失效：从缓冲区写入日志到文件" + logFilePath + "失败：" + err.Error())
+			return
+		}
+
+		for each := range logCache {
+			currentLogLine := logCache[each] + "\n"
+			fileHandle.Write([]byte(currentLogLine))
+		}
+
+		// 清空缓冲区
+		for each := range logCache {
+			logCache[each] = ""
+		}
+
+		// 将当前日志放在缓冲区最开始的位置
+		logCache[0] = fmt.Sprintf("[%s] @ %s (%s) %s (相关路径: %s)", logLine.log_type, logLine.log_module, logLine.log_time, logLine.log_content, logLine.log_trace)
+
+		return
+	}
 }
 
 // 将传入的参数打包成一个log对象
