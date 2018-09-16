@@ -60,5 +60,5 @@ func main() {
 		util.ErrorLog("main", "服务器启动失败，原因：" + err.Error(), "main->NewServer")
 	}
 
-	util.ErrorLog("main", http.ListenAndServe(fmt.Sprintf(":%d", listenPort), server).Error(), "main->ListenAndServe")
+	fmt.Println(http.ListenAndServe(fmt.Sprintf(":%d", listenPort), server).Error())
 }
