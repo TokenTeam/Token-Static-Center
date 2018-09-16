@@ -31,7 +31,10 @@ func NewServer() (vestigoRouter *vestigo.Router, err error) {
 	debugStatus = debugStatus.(string)
 
 	// 如果为Debug模式，则不检查安全性、不缓存
-	var imageFileHandler alice.Chain
+	var (
+		imageDownloadHandler alice.Chain
+		imageUploadHandler alice.Chain
+	)
 
 	// 根据Debug模式切换中间件模式
 	switch debugStatus {
