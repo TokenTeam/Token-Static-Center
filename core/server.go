@@ -39,9 +39,10 @@ func NewServer() (vestigoRouter *vestigo.Router, err error) {
 	// 根据Debug模式切换中间件模式
 	switch debugStatus {
 		case "on":
-			// 获取文件路由：文件获取
-			imageFileHandler = alice.New()
+			// 获取文件路由：直接获取
+			imageDownloadHandler = alice.New()
 			// 上传文件路由：直接上传
+			imageUploadHandler = alice.New()
 			break
 		case "off":
 			imageFileHandler = alice.New(security.WhiteListFilter)
