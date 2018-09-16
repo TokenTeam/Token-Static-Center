@@ -34,9 +34,8 @@ global:
 
 # 图片配置
 image:
-  # 最大长宽（为0即不限制）
-  max-width: 0
-  max-height: 2048
+  # 最大宽度（为0即不限制）
+  max-width: 2048
 
   # 可上传文件类型
   uploadable-file-type:
