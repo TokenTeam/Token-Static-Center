@@ -25,33 +25,49 @@ type log struct {
 // Web访问日志
 func AccessLog(logModule string, logContent string, logTrace string) {
 	// 检查配置文件是否关闭了该项日志的记录
+	accessLogStatus, _, _, _ := logStatus()
 
-	logLine := packLog("access", logModule, logContent, logTrace)
-	consoleOutput(logLine)
-	fileOutput()
+	if accessLogStatus == true {
+		logLine := packLog("access", logModule, logContent, logTrace)
+		consoleOutput(logLine)
+		fileOutput(logLine)
+	}
 }
 
 // 操作日志
 func OperationLog (logModule string, logContent string, logTrace string) {
-	logLine := packLog("operation", logModule, logContent, logTrace)
-	consoleOutput(logLine)
-	fileOutput()
-}
+	// 检查配置文件是否关闭了该项日志的记录
+	_, operationLogStatus, _, _ := logStatus()
 
+	if operationLogStatus == true {
+		logLine := packLog("operation", logModule, logContent, logTrace)
+		consoleOutput(logLine)
+		fileOutput(logLine)
+	}
+}
 
 // 告警日志
 func WarningLog(logModule string, logContent string, logTrace string) {
-	logLine := packLog("warning", logModule, logContent, logTrace)
-	consoleOutput(logLine)
-	fileOutput()
-}
+	// 检查配置文件是否关闭了该项日志的记录
+	_, _, warningLogStatus, _ := logStatus()
 
+	if warningLogStatus == true {
+		logLine := packLog("warning", logModule, logContent, logTrace)
+		consoleOutput(logLine)
+		fileOutput(logLine)
+	}
+}
 
 // 错误日志
 func ErrorLog(logModule string, logContent string, logTrace string) {
-	logLine := packLog("error", logModule, logContent, logTrace)
-	consoleOutput(logLine)
-	fileOutput()
+	// 检查配置文件是否关闭了该项日志的记录
+	_, _, _, errorLogStatus := logStatus()
+
+	if errorLogStatus == true {
+		logLine := packLog("error", logModule, logContent, logTrace)
+		consoleOutput(logLine)
+		fileOutput(logLine)
+	}
 }
 
 // 输出日志到控制台（颜色可配置）
