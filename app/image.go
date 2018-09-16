@@ -80,10 +80,12 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 
 	// 读取文件
 	fileData, err := readFile(filePath)
-
 	if err != nil {
 		return nil, errors.New("图片读取时出现致命错误：" + err.Error())
 	}
+
+	// 读取文件日志
+	readFileLogger(filePath, "ReadImage")
 
 	// 检查校验码
 	fileHash := util.GetMD5Hash(fileData)
