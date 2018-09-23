@@ -65,6 +65,7 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 
 			// 如果未命中白名单，或者根本没有来源头，返回错误
 			if hitFlag == false || requestReferrer == "" {
+				util.WarningLog("security", "接收来自" + util.GetRequestIP(r) + "的请求" + util.GetRequestURI(r) + "时出现错误：referrer：" + r.Referer() + "不在白名单中", "security->WhiteListFilter")
 				switch antiLeechWarning {
 					case "on":
 						app.AntiLeechImage(w, r)
