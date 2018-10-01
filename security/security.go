@@ -16,13 +16,13 @@ import (
 )
 
 // 过滤白名单以外的域名访问图片资源
-func WhiteListFilter(next http.Handler) (http.Handler) {
+func WhiteListFilter(next http.Handler) http.Handler {
 	handlerFunction := func(w http.ResponseWriter, r *http.Request) {
 		// 获取防盗链配置
 		antiLeechStatus, err := util.GetConfig("Security", "AntiLeech", "Status")
 
 		if err != nil {
-			util.ErrorLog("security", "读取防盗链配置失败，错误信息为：" + err.Error(), "security->WhiteListFilter")
+			util.ErrorLog("security", "读取防盗链配置失败，错误信息为："+err.Error(), "security->WhiteListFilter")
 			return
 		}
 
@@ -34,7 +34,7 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 			// 获取防盗链白名单
 			whiteListInterface, err := util.GetConfig("Security", "WhiteList")
 			if err != nil {
-				util.ErrorLog("security", "无法获取防盗链白名单，请检查防盗链配置！，错误信息：" + err.Error(), "security->WhiteListFilter")
+				util.ErrorLog("security", "无法获取防盗链白名单，请检查防盗链配置！，错误信息："+err.Error(), "security->WhiteListFilter")
 				return
 			}
 
@@ -57,7 +57,7 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 			antiLeechWarning, err := util.GetConfig("Security", "AntiLeech", "ShowWarning")
 
 			if err != nil {
-				util.ErrorLog("security", "读取防盗链警告配置失败，错误信息为：" + err.Error(), "security->WhiteListFilter")
+				util.ErrorLog("security", "读取防盗链警告配置失败，错误信息为："+err.Error(), "security->WhiteListFilter")
 			}
 
 			// 转换Interface到String
@@ -65,14 +65,13 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 
 			// 如果未命中白名单，或者根本没有来源头，返回错误
 			if hitFlag == false || requestReferrer == "" {
-				util.WarningLog("security", "接收来自" + util.GetRequestIP(r) + "的请求" + util.GetRequestURI(r) + "时出现错误：referrer：" + r.Referer() + "不在白名单中", "security->WhiteListFilter")
 				switch antiLeechWarning {
-					case "on":
-						app.AntiLeechImage(w, r)
-						return
-					case "off":
-						app.ErrorPage(w, r, 403, "WhiteListFilter", "触发反盗链机制")
-						return
+				case "on":
+					app.AntiLeechImage(w, r)
+					return
+				case "off":
+					app.ErrorPage(w, r, 403, "WhiteListFilter", "触发反盗链机制")
+					return
 				}
 				return
 			}
@@ -86,28 +85,24 @@ func WhiteListFilter(next http.Handler) (http.Handler) {
 	return http.HandlerFunc(handlerFunction)
 }
 
-
 // 安全上传
-func SecureUploadFilter(next http.Handler) (http.Handler) {
+func SecureUploadFilter(next http.Handler) http.Handler {
 	handlerFunction := func(w http.ResponseWriter, r *http.Request) {
 		// 获取安全上传配置
 		secureUploadStatus, err := util.GetConfig("Security", "Token")
 
 		if err != nil {
-			util.ErrorLog("security", "读取安全上传配置失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
+			util.ErrorLog("security", "读取安全上传配置失败，错误信息为："+err.Error(), "security->SecureUploadFilter")
 			return
 		}
 
-		// 转换Interface到String
-		secureUploadStatus = secureUploadStatus.(string)
-
 		// 如果安全上传为启动
-		if secureUploadStatus == "on" {
+		if secureUploadStatus.(string) == "on" {
 			// 获取安全配置-AppCode
 			appCodeInterface, err := util.GetConfig("Security", "AppCode")
 
 			if err != nil {
-				util.ErrorLog("security", "读取安全上传AppCode失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
+				util.ErrorLog("security", "读取安全上传AppCode失败，错误信息为："+err.Error(), "security->SecureUploadFilter")
 				return
 			}
 
@@ -154,7 +149,7 @@ func SecureUploadFilter(next http.Handler) (http.Handler) {
 				// 获取Salt
 				saltStringInterface, err := util.GetConfig("Security", "TokenSalt")
 				if err != nil {
-					util.ErrorLog("security", "读取Token验证SaltString失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
+					util.ErrorLog("security", "读取Token验证SaltString失败，错误信息为："+err.Error(), "security->SecureUploadFilter")
 					return
 				}
 				saltString := saltStringInterface.(string)
@@ -175,7 +170,7 @@ func SecureUploadFilter(next http.Handler) (http.Handler) {
 
 			// 如果都不匹配
 			if appCodeHitStatus == false {
-				app.ErrorPage(w, r, 403, "SecureUploadFilter", "存在非法授权，AccessToken校验失败，所发送的AccessToken为" + accessToken + "，nonce为" + nonce)
+				app.ErrorPage(w, r, 403, "SecureUploadFilter", "存在非法授权，AccessToken校验失败，所发送的AccessToken为"+accessToken+"，nonce为"+nonce)
 				return
 			}
 		}
