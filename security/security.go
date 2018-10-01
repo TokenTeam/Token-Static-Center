@@ -26,11 +26,8 @@ func WhiteListFilter(next http.Handler) http.Handler {
 			return
 		}
 
-		// 转换Interface到String
-		antiLeechStatus = antiLeechStatus.(string)
-
 		// 如果防盗链开启
-		if antiLeechStatus == "on" {
+		if antiLeechStatus.(string) == "on" {
 			// 获取防盗链白名单
 			whiteListInterface, err := util.GetConfig("Security", "WhiteList")
 			if err != nil {
