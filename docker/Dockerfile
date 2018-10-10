@@ -1,7 +1,7 @@
 FROM centos
 MAINTAINER LiuFuXin <loli@lurenjia.in>
 
-COPY go1.11.linux-amd64.tar.gz /tmp
+COPY https://dl.google.com/go/go1.11.linux-amd64.tar.gz /tmp
 COPY ImageMagick-6.9.10-12.tar.gz /tmp
 COPY vendor.zip /tmp
 COPY entrypoint.sh /
