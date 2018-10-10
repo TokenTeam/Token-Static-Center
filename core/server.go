@@ -47,8 +47,8 @@ func NewServer() (vestigoRouter *vestigo.Router, err error) {
 		case "off":
 			// 获取文件路由：白名单校验->文件获取
 			imageDownloadHandler = alice.New(security.WhiteListFilter)
-			// 上传文件路由：白名单校验->Token校验->文件上传
-			imageUploadHandler = alice.New(security.WhiteListFilter, security.SecureUploadFilter)
+			// 上传文件路由：Token校验->文件上传
+			imageUploadHandler = alice.New(security.SecureUploadFilter)
 			break
 		default:
 			util.ErrorLog("server", "调试模式配置错误！请检查配置文件！", "server->debugStatus")
