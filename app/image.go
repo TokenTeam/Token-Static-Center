@@ -171,25 +171,25 @@ func ReadImage(GUID string, width uint, targetFormat string, quality uint,
 }
 
 // 写入图片文件
-func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompressLevel int, maxWidth int) (err error) {
+func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompressLevel int, maxWidth int) (err error, fileSizeByte int) {
 	// 在数据库里面检查GUID是否有重复
 	year, month, md5, _, err := db.ReadImageDB(GUID)
 	// err不为空的情况有可能是数据本身就不存在（正好满足写入图片的需求）
 	// 因此需要结合year和month进行判断
 	if err != nil && year > 0 && month > 0 {
-		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：" + err.Error())
+		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：" + err.Error()), -1
 	}
 
 	// 如果有重复，报错，交给业务引擎返回重试信息（基本不可能，但是还是要检测一下）
 	if md5 != "" {
-		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：GUID重复，无法保存数据，请使用不重复的GUID替代之！")
+		return errors.New("写入图片过程中检查GUID是否重复时出现致命错误：GUID重复，无法保存数据，请使用不重复的GUID替代之！"), -1
 	}
 
 	// 图片尺寸预压缩（按比例预压缩）
 	if maxWidth != 0 {
 		fileStream, err = ImageResize(fileStream, maxWidth, true)
 		if err != nil {
-			return errors.New("写入图片过程中对图片尺寸进行预压缩时出现致命错误：" + err.Error())
+			return errors.New("写入图片过程中对图片尺寸进行预压缩时出现致命错误：" + err.Error()), -1
 		}
 	}
 
@@ -202,13 +202,13 @@ func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompres
 	// 转换成配置文件中的默认格式
 	fileStream, err = ImageReformat(fileStream, defaultFormat)
 	if err != nil {
-		return errors.New("写入图片过程中转换格式时出现致命错误：" + err.Error())
+		return errors.New("写入图片过程中转换格式时出现致命错误：" + err.Error()), -1
 	}
 
 	// 生成待存储文件路径
 	storagePath, err := getStorageRoot()
 	if err != nil {
-		return errors.New("写入图片过程中获取存储根目录时出现致命错误：" + err.Error())
+		return errors.New("写入图片过程中获取存储根目录时出现致命错误：" + err.Error()), -1
 	}
 	// 拼接方式：根目录 + image + 年 + 月 + GUID + . + 格式
 	t := time.Now()
@@ -230,7 +230,7 @@ func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompres
 	// 存储文件
 	err = writeFile(filePath, fileStream)
 	if err != nil {
-		return errors.New("写入图片过程中存储文件时出现致命错误：" + err.Error())
+		return errors.New("写入图片过程中存储文件时出现致命错误：" + err.Error()), -1
 	}
 
 	// 写入文件日志
@@ -243,13 +243,13 @@ func WriteImage(GUID string, fileStream []byte, defaultFormat string, preCompres
 	}
 	err = db.WriteImageDB(GUID, uint64(finalFileSizeByte), defaultFormat, CurrentUploadAppCode, md5)
 	if err != nil {
-		return errors.New("写入图片过程中写入数据库时出现致命错误：" + err.Error())
+		return errors.New("写入图片过程中写入数据库时出现致命错误：" + err.Error()), -1
 	}
 
 	// 报告保存成功状态
 	util.OperationLog("WriteImage", "保存图片成功，保存路径为" + filePath, "app->WriteImage")
 
-	return nil
+	return nil, finalFileSizeByte
 }
 
 
