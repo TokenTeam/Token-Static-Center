@@ -1,3 +1,8 @@
 \.DS_Store
 \.idea/
 \vendor/
+static/storage/image/
+static/storage/watermark/
+static/cache/
+static/log/
+init
