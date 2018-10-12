@@ -248,7 +248,7 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 	// 记录访问流量与频次
 	err = db.DownloadCounter(GUID, cacheSizeByte)
 	if err != nil {
-		util.ErrorLog("app", "记录访问失败，原因：" + err.Error(), "app->ImageFetchHandler")
+		util.ErrorLog("app", "记录访问流量与频次失败，原因：" + err.Error(), "app->ImageFetchHandler")
 	}
 
 	// 记录执行时间
@@ -337,13 +337,17 @@ func ImageUploadHandler(w http.ResponseWriter, r *http.Request) {
 	guid := fmt.Sprintf("%s", guidObj)
 
 	// 写入图像
-	err = WriteImage(guid, imageFileStream.Bytes(), storageFileType, compressLevel, maxWidth)
+	err, fileSizeByte := WriteImage(guid, imageFileStream.Bytes(), storageFileType, compressLevel, maxWidth)
 	if err != nil {
 		JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", -6, "保存图像失败：" + err.Error())
 		return
 	}
 
-	//fmt.Println(guid, bytes.Count(imageFileStream.Bytes(), nil), storageFileType, compressLevel, maxWidth)
+	// 记录上传流量与频次
+	err = db.UploadCounter(fileSizeByte)
+	if err != nil {
+		util.ErrorLog("app", "记录上传流量与频次失败，原因：" + err.Error(), "app->ImageFetchHandler")
+	}
 
 	// 返回数据
 	JsonReturn(w, r, "ImageUploadHandler", "app->ImageUploadHandler", 0, guid)
