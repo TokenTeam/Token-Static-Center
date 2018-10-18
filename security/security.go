@@ -22,7 +22,7 @@ func WhiteListFilter(next http.Handler) http.Handler {
 		antiLeechStatus, err := util.GetConfig("Security", "AntiLeech", "Status")
 
 		if err != nil {
-			util.ErrorLog("security", "读取防盗链配置失败，错误信息为："+err.Error(), "security->WhiteListFilter")
+			util.ErrorLog("security", "读取防盗链配置失败，错误信息为：" + err.Error(), "security->WhiteListFilter")
 			return
 		}
 
@@ -31,7 +31,7 @@ func WhiteListFilter(next http.Handler) http.Handler {
 			// 获取防盗链白名单
 			whiteListInterface, err := util.GetConfig("Security", "WhiteList")
 			if err != nil {
-				util.ErrorLog("security", "无法获取防盗链白名单，请检查防盗链配置！，错误信息："+err.Error(), "security->WhiteListFilter")
+				util.ErrorLog("security", "无法获取防盗链白名单，请检查防盗链配置！，错误信息：" + err.Error(), "security->WhiteListFilter")
 				return
 			}
 
@@ -54,7 +54,7 @@ func WhiteListFilter(next http.Handler) http.Handler {
 			antiLeechWarning, err := util.GetConfig("Security", "AntiLeech", "ShowWarning")
 
 			if err != nil {
-				util.ErrorLog("security", "读取防盗链警告配置失败，错误信息为："+err.Error(), "security->WhiteListFilter")
+				util.ErrorLog("security", "读取防盗链警告配置失败，错误信息为：" + err.Error(), "security->WhiteListFilter")
 			}
 
 			// 转换Interface到String
@@ -89,7 +89,7 @@ func SecureUploadFilter(next http.Handler) http.Handler {
 		secureUploadStatus, err := util.GetConfig("Security", "Token")
 
 		if err != nil {
-			util.ErrorLog("security", "读取安全上传配置失败，错误信息为："+err.Error(), "security->SecureUploadFilter")
+			util.ErrorLog("security", "读取安全上传配置失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
 			return
 		}
 
@@ -99,7 +99,7 @@ func SecureUploadFilter(next http.Handler) http.Handler {
 			appCodeInterface, err := util.GetConfig("Security", "AppCode")
 
 			if err != nil {
-				util.ErrorLog("security", "读取安全上传AppCode失败，错误信息为："+err.Error(), "security->SecureUploadFilter")
+				util.ErrorLog("security", "读取安全上传AppCode失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
 				return
 			}
 
@@ -146,7 +146,7 @@ func SecureUploadFilter(next http.Handler) http.Handler {
 				// 获取Salt
 				saltStringInterface, err := util.GetConfig("Security", "TokenSalt")
 				if err != nil {
-					util.ErrorLog("security", "读取Token验证SaltString失败，错误信息为："+err.Error(), "security->SecureUploadFilter")
+					util.ErrorLog("security", "读取Token验证SaltString失败，错误信息为：" + err.Error(), "security->SecureUploadFilter")
 					return
 				}
 				saltString := saltStringInterface.(string)
