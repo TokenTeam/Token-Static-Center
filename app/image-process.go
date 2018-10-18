@@ -6,10 +6,10 @@
 package app
 
 import (
-	"gopkg.in/gographics/imagick.v2/imagick"
-	"errors"
-	"strconv"
 	"bytes"
+	"errors"
+	"gopkg.in/gographics/imagick.v2/imagick"
+	"strconv"
 )
 
 // 图片缩放
@@ -30,24 +30,24 @@ func ImageResize(inputFileStream []byte, width int, keepRatio bool) (outputFileS
 	imageRatio := float32(imageHeight) / float32(imageWidth)
 
 	switch keepRatio {
-		case true:
-			// 按比例缩放
-			newImageWidth := uint(width)
-			newImageHeight := uint(float32(width) * imageRatio)
+	case true:
+		// 按比例缩放
+		newImageWidth := uint(width)
+		newImageHeight := uint(float32(width) * imageRatio)
 
-			// 采取多相位图像插值算法（速度最快，最适合网页图片渲染）
-			err = imageHandler.ResizeImage(newImageWidth, newImageHeight, imagick.FILTER_LANCZOS, 1)
+		// 采取多相位图像插值算法（速度最快，最适合网页图片渲染）
+		err = imageHandler.ResizeImage(newImageWidth, newImageHeight, imagick.FILTER_LANCZOS, 1)
 
-			break
-		case false:
-			// 不按比例缩放
-			newImageWidth := uint(width)
-			newImageHeight := imageHeight
+		break
+	case false:
+		// 不按比例缩放
+		newImageWidth := uint(width)
+		newImageHeight := imageHeight
 
-			// 采取多相位图像插值算法（速度最快，最适合网页图片渲染）
-			err = imageHandler.ResizeImage(newImageWidth, newImageHeight, imagick.FILTER_LANCZOS, 1)
+		// 采取多相位图像插值算法（速度最快，最适合网页图片渲染）
+		err = imageHandler.ResizeImage(newImageWidth, newImageHeight, imagick.FILTER_LANCZOS, 1)
 
-			break
+		break
 	}
 
 	if err != nil {
@@ -98,7 +98,7 @@ func ImageWatermark(inputFileStream []byte, inputWatermarkStream []byte,
 	// 对于包含Alpha通道的图片资源，不能使用SetImageOpacity，否则会失去Alpha通道
 	// 需要使用CompositeImage方法进行透明度设置
 	// EvaluateImage方法中1.0为不透明，0.0为完全透明
-	// 与本方法0~100，100位完全透明的设定不一样，此处顺便进行转换
+	// 与本方法0~100，100为完全透明的设定不一样，此处顺便进行转换
 	imageOpacity := 1.0 - (float64(watermarkOpacity) / float64(100))
 	watermarkHandler.EvaluateImage(imagick.EVAL_OP_MULTIPLY, imageOpacity)
 
@@ -174,22 +174,22 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 	// 根据文字样式定义字体
 	fontName := ""
 	switch watermarkStyle {
-		// 常规
-		case "regular":
-			fontName = "msyh.ttf"
-			break
-			// 细字体
-		case "light":
-			fontName = "msyh-light.ttf"
-			break
-			// 粗体
-		case "bold":
-			fontName = "msyh-bold.ttf"
-			break
-			// 错误捕获
-		default:
-			return nil, errors.New("字体类型错误，期望值为regular/light/bold，传入值为" + watermarkStyle)
-			break
+	// 常规
+	case "regular":
+		fontName = "msyh.ttf"
+		break
+		// 细字体
+	case "light":
+		fontName = "msyh-light.ttf"
+		break
+		// 粗体
+	case "bold":
+		fontName = "msyh-bold.ttf"
+		break
+		// 错误捕获
+	default:
+		return nil, errors.New("字体类型错误，期望值为regular/light/bold，传入值为" + watermarkStyle)
+		break
 	}
 
 	// 定义字体路径
@@ -217,30 +217,30 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 	// 文字对齐方式
 	// 根据水印位置确认
 	switch watermarkPosition {
-		// 左上角
-		case 1:
-			textWatermarkHandler.SetGravity(imagick.GRAVITY_NORTH_WEST)
-			break
-		// 右上角
-		case 2:
-			textWatermarkHandler.SetGravity(imagick.GRAVITY_NORTH_EAST)
-			break
-		// 左下角
-		case 3:
-			textWatermarkHandler.SetGravity(imagick.GRAVITY_SOUTH_WEST)
-			break
-		// 右下角
-		case 4:
-			textWatermarkHandler.SetGravity(imagick.GRAVITY_SOUTH_EAST)
-			break
-		// 正中央
-		case 5:
-			textWatermarkHandler.SetGravity(imagick.GRAVITY_CENTER)
-			break
-		// 错误捕获
-		default:
-			return nil, errors.New("水印位置错误，期望值为1/2/3/4/5，传入值为" + strconv.Itoa(int(watermarkPosition)))
-			break
+	// 左上角
+	case 1:
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_NORTH_WEST)
+		break
+	// 右上角
+	case 2:
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_NORTH_EAST)
+		break
+	// 左下角
+	case 3:
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_SOUTH_WEST)
+		break
+	// 右下角
+	case 4:
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_SOUTH_EAST)
+		break
+	// 正中央
+	case 5:
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_CENTER)
+		break
+	// 错误捕获
+	default:
+		return nil, errors.New("水印位置错误，期望值为1/2/3/4/5，传入值为" + strconv.Itoa(int(watermarkPosition)))
+		break
 	}
 
 	// 文字大小
@@ -255,10 +255,10 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 	// 新建水印图片
 	// 宽度与长度均由字体大小进行动态设置
 	// 为了保持字体清晰锐利，显现出浮雕效果，采取放大4倍后进行超采样的手段
-	imageWatermarkHandler.NewImage(uint(float64(bytes.Count([]byte(watermarkText), nil)) * float64(watermarkSize) * 4), uint(float64(watermarkSize) * 1.4 * 4), colorPalette)
+	imageWatermarkHandler.NewImage(uint(float64(bytes.Count([]byte(watermarkText), nil))*float64(watermarkSize)*4), uint(float64(watermarkSize)*1.4*4), colorPalette)
 	imageWatermarkZoomWidth := imageWatermarkHandler.GetImageWidth()
 	imageWatermarkZoomHeight := imageWatermarkHandler.GetImageHeight()
-	imageWatermarkHandler.ResizeImage(imageWatermarkZoomWidth / 4, imageWatermarkZoomHeight / 4, imagick.FILTER_LANCZOS, 1)
+	imageWatermarkHandler.ResizeImage(imageWatermarkZoomWidth/4, imageWatermarkZoomHeight/4, imagick.FILTER_LANCZOS, 1)
 
 	// 绘制水印文字
 	err = imageWatermarkHandler.DrawImage(textWatermarkHandler)
@@ -376,39 +376,39 @@ func getWatermarkPosition(imageWidth uint, imageHeight uint, watermarkPosition u
 	watermarkCoordinateY = uint(0)
 
 	switch watermarkPosition {
-		// 左上角
-		case 1:
-			// 直接赋值
-			watermarkCoordinateX = bordermarginWidth
-			watermarkCoordinateY = bordermarginHeight
-			break
-			// 右上角
-		case 2:
-			// 需要对X轴进行重计算
-			watermarkCoordinateX = imageWidth - bordermarginWidth - watermarkWidth
-			watermarkCoordinateY = bordermarginHeight
-			break
-			// 左下角
-		case 3:
-			// 需要对Y轴进行重计算
-			watermarkCoordinateX = bordermarginWidth
-			watermarkCoordinateY = imageHeight - bordermarginHeight - watermarkHeight
-			break
-			// 右下角
-		case 4:
-			// XY轴都需要重计算
-			watermarkCoordinateX = imageWidth - bordermarginWidth - watermarkWidth
-			watermarkCoordinateY = imageHeight - bordermarginHeight - watermarkHeight
-			break
-			// 正中央
-		case 5:
-			// 计算方法与上面不太一致
-			// 不需要borderMargin参数
-			watermarkCoordinateX = (imageWidth - watermarkWidth) / 2
-			watermarkCoordinateY = (imageHeight - watermarkHeight) / 2
-			break
-		default:
-			return 0, 0, errors.New("水印位置错误，期望值为1/2/3/4/5，传入值为" + strconv.Itoa(int(watermarkPosition)))
+	// 左上角
+	case 1:
+		// 直接赋值
+		watermarkCoordinateX = bordermarginWidth
+		watermarkCoordinateY = bordermarginHeight
+		break
+		// 右上角
+	case 2:
+		// 需要对X轴进行重计算
+		watermarkCoordinateX = imageWidth - bordermarginWidth - watermarkWidth
+		watermarkCoordinateY = bordermarginHeight
+		break
+		// 左下角
+	case 3:
+		// 需要对Y轴进行重计算
+		watermarkCoordinateX = bordermarginWidth
+		watermarkCoordinateY = imageHeight - bordermarginHeight - watermarkHeight
+		break
+		// 右下角
+	case 4:
+		// XY轴都需要重计算
+		watermarkCoordinateX = imageWidth - bordermarginWidth - watermarkWidth
+		watermarkCoordinateY = imageHeight - bordermarginHeight - watermarkHeight
+		break
+		// 正中央
+	case 5:
+		// 计算方法与上面不太一致
+		// 不需要borderMargin参数
+		watermarkCoordinateX = (imageWidth - watermarkWidth) / 2
+		watermarkCoordinateY = (imageHeight - watermarkHeight) / 2
+		break
+	default:
+		return 0, 0, errors.New("水印位置错误，期望值为1/2/3/4/5，传入值为" + strconv.Itoa(int(watermarkPosition)))
 	}
 	return watermarkCoordinateX, watermarkCoordinateY, nil
 }
