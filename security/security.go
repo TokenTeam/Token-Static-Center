@@ -18,6 +18,7 @@ import (
 // 过滤白名单以外的域名访问图片资源
 func WhiteListFilter(next http.Handler) http.Handler {
 	handlerFunction := func(w http.ResponseWriter, r *http.Request) {
+
 		// 获取防盗链配置
 		antiLeechStatus, err := util.GetConfig("Security", "AntiLeech", "Status")
 
@@ -44,7 +45,7 @@ func WhiteListFilter(next http.Handler) http.Handler {
 			// httpReferer是否命中白名单
 			hitFlag := false
 			for i := 0; i < len(whiteListArray); i++ {
-				if whiteListArray[i] == requestReferrer {
+				if matchReferer(requestReferer, whiteListArray[i]) {
 					hitFlag = true
 					break
 				}
@@ -177,4 +178,17 @@ func SecureUploadFilter(next http.Handler) http.Handler {
 	}
 
 	return http.HandlerFunc(handlerFunction)
+}
+
+// 匹配Referer有效性
+// 采取开头模糊匹配的方式
+// 只有index = 0才可认定为命中白名单
+func matchReferer(referer string, whiteListReferer string) (validity bool) {
+	index := strings.Index(referer, whiteListReferer)
+
+	if index == 0 {
+		return true
+	} else {
+		return false
+	}
 }
