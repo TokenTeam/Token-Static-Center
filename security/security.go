@@ -39,9 +39,9 @@ func WhiteListFilter(next http.Handler) http.Handler {
 			whiteListArray := whiteListInterface.([]string)
 
 			// 获取当前的HTTP referrer
-			requestReferrer := r.Referer()
+			requestReferer := r.Referer()
 
-			// httpReferrer是否命中白名单
+			// httpReferer是否命中白名单
 			hitFlag := false
 			for i := 0; i < len(whiteListArray); i++ {
 				if whiteListArray[i] == requestReferrer {
@@ -61,7 +61,7 @@ func WhiteListFilter(next http.Handler) http.Handler {
 			antiLeechWarning = antiLeechWarning.(string)
 
 			// 如果未命中白名单，或者根本没有来源头，返回错误
-			if hitFlag == false || requestReferrer == "" {
+			if hitFlag == false || requestReferer == "" {
 				switch antiLeechWarning {
 				case "on":
 					app.AntiLeechImage(w, r)
