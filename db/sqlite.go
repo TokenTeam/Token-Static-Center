@@ -236,7 +236,7 @@ func execSQLite(query string) (execResults map[int]map[string]string, err error)
 // 检查数据库结构，如果结构不存在，新建数据表
 func checkDBStructureSQLite(dbHandle *sql.DB) (err error) {
 	// 新建image_info表
-	_, err1 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS image_info (`guid` varchar(128) PRIMARY KEY NOT NULL, year bigint NOT NULL, month bigint NOT NULL, file_size_byte bigint NOT NULL, file_storage_format varchar(32) NOT NULL, upload_time bigint NOT NULL, app_code varchar(64) NOT NULL, md5 varchar(32) NOT NULL, download_count bigint NOT NULL); CREATE UNIQUE INDEX IF NOT EXISTS image_info_guid_uindex ON image_info (guid);")
+	_, err1 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS image_info (`guid` varchar(128) PRIMARY KEY NOT NULL, year bigint NOT NULL, month bigint NOT NULL, file_size_byte bigint NOT NULL, file_storage_format varchar(32) NOT NULL, upload_time bigint NOT NULL DEFAULT CURRENT_TIMESTAMP, app_code varchar(64) NOT NULL, md5 varchar(32) NOT NULL, download_count bigint NOT NULL); CREATE UNIQUE INDEX IF NOT EXISTS image_info_guid_uindex ON image_info (guid);")
 
 	// 新建gc_log表
 	_, err2 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS gc_log (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, collection_time bigint NOT NULL, garbage_count bigint NOT NULL);")

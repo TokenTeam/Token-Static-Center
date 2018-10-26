@@ -237,7 +237,7 @@ func execMySQL(query string) (execResults map[int]map[string]string, err error) 
 // 检查数据库结构，如果结构不存在，新建数据表
 func checkDBStructureMySQL(dbHandle *sql.DB) (err error) {
 	// 新建image_info表
-	_, err1 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS `image_info` ( `guid` VARCHAR(128) NOT NULL , `year` BIGINT NOT NULL , `month` BIGINT NOT NULL , `file_size_byte` BIGINT NOT NULL , `file_storage_format` VARCHAR(32) NOT NULL , `upload_time` TIMESTAMP NOT NULL , `app_code` VARCHAR(64) NOT NULL , `md5` VARCHAR(32) NOT NULL , `download_count` BIGINT NOT NULL , PRIMARY KEY (`guid`), INDEX (`year`), INDEX (`month`), INDEX (`app_code`), INDEX (`md5`)) ENGINE = MyISAM;")
+	_, err1 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS `image_info` ( `guid` VARCHAR(128) NOT NULL , `year` BIGINT NOT NULL , `month` BIGINT NOT NULL , `file_size_byte` BIGINT NOT NULL , `file_storage_format` VARCHAR(32) NOT NULL , `upload_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `app_code` VARCHAR(64) NOT NULL , `md5` VARCHAR(32) NOT NULL , `download_count` BIGINT NOT NULL , PRIMARY KEY (`guid`), INDEX (`year`), INDEX (`month`), INDEX (`app_code`), INDEX (`md5`)) ENGINE = MyISAM;")
 
 	// 新建gc_log表
 	_, err2 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS `gc_log` ( `id` INT NOT NULL AUTO_INCREMENT , `collection_time` TIMESTAMP NOT NULL , `garbage_count` BIGINT NOT NULL , PRIMARY KEY (`id`), INDEX (`collection_time`)) ENGINE = MyISAM;")
