@@ -23,7 +23,7 @@ func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream 
 	// 获取缓存路径
 	cachePath, err := getCachePath(cacheFileName)
 	if err != nil {
-		return false, nil, -1, errors.New("尝试获取缓存时遭遇致命错误：" + err.Error())
+		return false, nil, 0, errors.New("尝试获取缓存时遭遇致命错误：" + err.Error())
 
 	}
 
@@ -32,7 +32,7 @@ func CacheFetchHandler(cacheFileName string) (cacheStatus bool, cacheFileStream 
 	// 处理错误
 	// 文件不存在，或者文件为文件夹
 	if err != nil {
-		return false, nil, -1, nil
+		return false, nil, 0, nil
 	}
 
 	// 获取文件体积
@@ -49,13 +49,13 @@ func CacheWriteHandler(cacheStream []byte, cacheFileName string) (cacheLocation 
 	// 获取缓存路径
 	cachePath, err := getCachePath(cacheFileName)
 	if err != nil {
-		return "", -1, errors.New("写入缓存时遭遇致命错误：" + err.Error())
+		return "", 0, errors.New("写入缓存时遭遇致命错误：" + err.Error())
 	}
 
 	// 写入文件
 	err = writeFile(cachePath, cacheStream)
 	if err != nil {
-		return "", -1, errors.New("图片资源缓存时存储文件过程中遭遇致命错误：" + err.Error())
+		return "", 0, errors.New("图片资源缓存时存储文件过程中遭遇致命错误：" + err.Error())
 	}
 
 	// 计算文件大小
