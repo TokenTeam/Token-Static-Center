@@ -236,7 +236,10 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 
 		// 执行缓存操作
 		if debugConfig != "on" && cacheConfig == "on" {
-			cacheLocation, cacheSizeByte, err := CacheWriteHandler(imageData, requestPath[2])
+			// 特别指定cacheLocation，避免出现幽灵变量问题
+			// https://rpeshkov.net/blog/golang-variable-shadowing/
+			cacheLocation := ""
+			cacheLocation, cacheSizeByte, err = CacheWriteHandler(imageData, requestPath[2])
 			if err != nil {
 				util.ErrorLog("app", "执行存储缓存失败，原因：" + err.Error(), "app->ImageFetchHandler")
 			}
