@@ -1,10 +1,10 @@
 hash: 458330a771c5940c8104a21a0ed348eb878faf6f6b5f428b95df4b92334c74e3
-updated: 2018-09-11T12:54:04.516247978+08:00
+updated: 2019-01-06T23:44:46.736993068+08:00
 imports:
 - name: github.com/go-sql-driver/mysql
-  version: d523deb1b23d913de5bdada721a6071e71283618
+  version: 72cd26f257d44c1114970e19afddcd812016007e
 - name: github.com/go-yaml/yaml
-  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
+  version: 51d6538a90f86fe93ac480b35f37b2be17fef232
 - name: github.com/husobee/vestigo
   version: f8f5b5dc2bd74408887fd4b462055e324c4cbd63
 - name: github.com/justinas/alice
@@ -14,7 +14,7 @@ imports:
 - name: github.com/satori/go.uuid
   version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: google.golang.org/appengine
-  version: 03cac3b07182cfb08c0d0c0b6ee72a1ceb151c92
+  version: e9657d882bb81064595ca3b56cbe2546bbabf7b1
   subpackages:
   - cloudsql
 - name: gopkg.in/gographics/imagick.v2
