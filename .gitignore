@@ -6,3 +6,5 @@ static/storage/watermark/
 static/cache/
 static/log/
 init
+
+glide\.lock
