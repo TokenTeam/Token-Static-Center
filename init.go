@@ -5,6 +5,8 @@ import (
 	"flag"
 	"strconv"
 	"github.com/TokenTeam/Token-Static-Center/core"
+	_ "github.com/mkevac/debugcharts" // 可选，添加后可以查看几个实时图表数据
+	_ "net/http/pprof" // 必须，引入 pprof 模块
 	"net/http"
 	"fmt"
 	"gopkg.in/gographics/imagick.v2/imagick"
