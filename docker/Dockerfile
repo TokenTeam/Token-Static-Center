@@ -22,7 +22,7 @@ ENV PKG_CONFIG_PATH /usr/local/lib/pkgconfig
 
 RUN yum install -y epel-release \
     && yum makecache \
-    && yum install -y libjpeg-turbo libjpeg-turbo-devel libjpeg-turbo-utils libpng libpng-devel libpng-static libtiff libtiff-devel libtiff-static giflib giflib-devel giflib-utils libwebp libwebp-devel libwebp-tools make gcc gcc-g++ libtool pkgconfig zip unzip tar gzip freetype freetype-devel wget
+    && yum install -y graphviz libjpeg-turbo libjpeg-turbo-devel libjpeg-turbo-utils libpng libpng-devel libpng-static libtiff libtiff-devel libtiff-static giflib giflib-devel giflib-utils libwebp libwebp-devel libwebp-tools make gcc gcc-g++ libtool pkgconfig zip unzip tar gzip freetype freetype-devel wget
 
 RUN cd /tmp \
     && wget https://dl.google.com/go/go1.11.linux-amd64.tar.gz \
