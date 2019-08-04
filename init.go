@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/TokenTeam/Token-Static-Center/util"
 	"flag"
+	"log"
+	"os"
 	"strconv"
 	"github.com/TokenTeam/Token-Static-Center/core"
 	_ "github.com/mkevac/debugcharts" // 可选，添加后可以查看几个实时图表数据
@@ -13,6 +15,18 @@ import (
 )
 
 func main() {
+
+	if os.Getenv("DEBUG") == "true" {
+		go func() {
+			// terminal: $ go tool pprof -http=:8081 http://localhost:6060/debug/pprof/heap
+			// web:
+			// 1、http://localhost:8081/ui
+			// 2、http://localhost:6060/debug/charts
+			// 3、http://localhost:6060/debug/pprof
+			log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
+		}()
+	}
+
 	// 初始化
 	imagick.Initialize()
 	// 延迟执行
