@@ -206,6 +206,10 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 	colorPalette.SetColor("#" + watermarkColor)
 	// 文字填充颜色
 	textWatermarkHandler.SetFillColor(colorPalette)
+	textWatermarkHandler.SetStrokeWidth(0)
+	textWatermarkHandler.SetStrokeAntialias(true)
+	textWatermarkHandler.SetStrokeOpacity(0.3)
+	textWatermarkHandler.SetStrokeColor(colorPalette)
 	// 文字透明度
 	imageOpacity := 1.0 - (float64(watermarkOpacity) / float64(100))
 	textWatermarkHandler.SetOpacity(imageOpacity)
@@ -219,19 +223,19 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 	switch watermarkPosition {
 	// 左上角
 	case 1:
-		textWatermarkHandler.SetGravity(imagick.GRAVITY_NORTH_WEST)
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_WEST)
 		break
 	// 右上角
 	case 2:
-		textWatermarkHandler.SetGravity(imagick.GRAVITY_NORTH_EAST)
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_EAST)
 		break
 	// 左下角
 	case 3:
-		textWatermarkHandler.SetGravity(imagick.GRAVITY_SOUTH_WEST)
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_WEST)
 		break
 	// 右下角
 	case 4:
-		textWatermarkHandler.SetGravity(imagick.GRAVITY_SOUTH_EAST)
+		textWatermarkHandler.SetGravity(imagick.GRAVITY_EAST)
 		break
 	// 正中央
 	case 5:
@@ -245,7 +249,7 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 
 	// 文字大小
 	textWatermarkHandler.SetFontSize(float64(watermarkSize))
-	//textWatermarkHandler.SetTextAntialias(true)
+	textWatermarkHandler.SetTextAntialias(true)
 	// 文字文本
 	textWatermarkHandler.Annotation(0, 0, watermarkText)
 
@@ -255,7 +259,7 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 	// 新建水印图片
 	// 宽度与长度均由字体大小进行动态设置
 	// 为了保持字体清晰锐利，显现出浮雕效果，采取放大4倍后进行超采样的手段
-	imageWatermarkHandler.NewImage(uint(float64(bytes.Count([]byte(watermarkText), nil))*float64(watermarkSize)*4), uint(float64(watermarkSize)*1.4*4), colorPalette)
+	imageWatermarkHandler.NewImage(uint(float64(bytes.Count([]byte(watermarkText), nil))*float64(watermarkSize)*4), uint(float64(watermarkSize) * 6), colorPalette)
 	imageWatermarkZoomWidth := imageWatermarkHandler.GetImageWidth()
 	imageWatermarkZoomHeight := imageWatermarkHandler.GetImageHeight()
 	imageWatermarkHandler.ResizeImage(imageWatermarkZoomWidth/4, imageWatermarkZoomHeight/4, imagick.FILTER_LANCZOS, 1)
@@ -269,7 +273,7 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 
 	// 绘制文字阴影
 	shadowLayer := imageWatermarkHandler.Clone()
-	shadowLayer.ShadowImage(70, 1.5, 0, 0)
+	shadowLayer.ShadowImage(30, 1.2, 0, 0)
 	// 默认的Shadow是白色的，进行反色处理，变成黑色
 	shadowLayer.NegateImage(true)
 	err = imageWatermarkHandler.CompositeImage(shadowLayer, imagick.COMPOSITE_OP_DST_OVER, -2, 0)
