@@ -31,6 +31,16 @@ global:
     # MySQL填写user:password@tcp(localhost:5555)/dbname?charset=utf8
     # db-resource: /Users/lurenjiasworld/Documents/Coding/Golang/src/github.com/LuRenJiasWorld/Token-Static-Center/static/db/token-static-center.db
     db-resource: test_user:932PBv_76dPpo19o9OE1L85TQ3WPNWQ@tcp(127.0.0.1:3306)/token_static_center?charset=utf8
+    # IP地址类别
+    # 适配反向代理
+    # - native                原生IP地址
+    # - real-ip               Nginx端的X-Real-IP
+    # - x-forwarded-for       Nginx端的X-Forwarded-For
+    # - cloud-flare           CloudFlare使用的CF-Connecting-IP
+    ip-type: x-forwarded-for
+    # 日志缓存长度
+    # 设置为0以关闭缓存
+    log-cache-length: 0
 
 # 图片配置
 image:
