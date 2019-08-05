@@ -58,7 +58,7 @@ RUN cd /home/gopath/src/github.com/TokenTeam/Token-Static-Center \
     && mv init token-static-center 
 
 RUN chmod +x /entrypoint.sh \
-    && rm -rf /tmp \
+    && rm -rf /tmp/* \
     && yum clean all
 
 COPY config.yaml /etc/token-static-center/config.yaml
