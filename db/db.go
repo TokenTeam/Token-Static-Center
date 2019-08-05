@@ -221,7 +221,7 @@ func UploadCounter(upload_size_byte int) (err error) {
 	}
 
 	if err1 != nil || err2 != nil {
-		return errors.New("上传计数自增中更新数据失败，原因：" + err1.Error() + err2.Error())
+		return errors.New("上传计数自增中更新数据失败，原因：" + err1.Error() + " " + err2.Error())
 	}
 
 	return nil
@@ -268,7 +268,7 @@ func DownloadCounter(guid string, download_size_byte int) (err error) {
 	}
 
 	if err1 != nil || err2 != nil || err3 != nil {
-		return errors.New("上传计数自增中更新数据失败，原因：" + err1.Error() + err2.Error())
+		return errors.New("上传计数自增中更新数据失败，原因：" + err1.Error() + " " + err2.Error())
 	}
 
 	return nil

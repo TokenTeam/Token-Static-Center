@@ -245,7 +245,7 @@ func checkDBStructureSQLite(dbHandle *sql.DB) (err error) {
 	_, err3 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS image_statistics (date varchar(10) PRIMARY KEY NOT NULL, upload_count bigint NOT NULL, download_count bigint NOT NULL, upload_size_byte bigint NOT NULL, download_size_byte bigint NOT NULL);")
 
 	if err1 != nil || err2 != nil || err3 != nil {
-		return errors.New("新建数据表时出现错误！" + err1.Error() + err2.Error() + err3.Error())
+		return errors.New("新建数据表时出现错误！" + err1.Error() + " " + err2.Error() + " " + err3.Error())
 	}
 
 	return nil

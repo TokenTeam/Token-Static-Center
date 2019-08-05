@@ -244,7 +244,7 @@ func checkDBStructureMySQL(dbHandle *sql.DB) (err error) {
 	_, err3 := dbHandle.Exec("CREATE TABLE IF NOT EXISTS `image_statistics` ( `date` VARCHAR(10) NOT NULL , `upload_count` BIGINT NOT NULL , `download_count` BIGINT NOT NULL , `upload_size_byte` BIGINT NOT NULL , `download_size_byte` BIGINT NOT NULL , PRIMARY KEY (`date`)) ENGINE = MyISAM;")
 
 	if err1 != nil || err2 != nil || err3 != nil {
-		return errors.New("新建数据表时出现错误！" + err1.Error() + err2.Error() + err3.Error())
+		return errors.New("新建数据表时出现错误！" + err1.Error() + " " + err2.Error() + " " + err3.Error())
 	}
 
 	return nil
