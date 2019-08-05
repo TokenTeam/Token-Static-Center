@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/TokenTeam/Token-Static-Center/util"
-	"strconv"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 )
 
 // 插入数据
@@ -172,11 +172,9 @@ func updateMySQL(table string, updateItem string, updateValue int, query map[str
 		return errors.New("插入数据时，预格式化语句失败，原因：" + err.Error())
 	}
 
-	updateResult, err := updateObj.Exec()
+	_, err = updateObj.Exec()
 
-	updateRows, err := updateResult.RowsAffected()
-
-	if err != nil || updateRows != 1 {
+	if err != nil {
 		return errors.New("更新数据后，校验失败，相关原因：" + err.Error())
 	}
 
