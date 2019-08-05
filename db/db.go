@@ -6,11 +6,10 @@
 package db
 
 import (
-	"github.com/TokenTeam/Token-Static-Center/util"
 	"errors"
-	"time"
+	"github.com/TokenTeam/Token-Static-Center/util"
 	"strconv"
-	"fmt"
+	"time"
 )
 
 // 数据库结构（以MySQL为例，SQLite具体参考sqlite.go->checkDBStructureSQLite方法）
@@ -294,24 +293,4 @@ func getDBType() (dbType string, err error) {
 		default:
 			return "", errors.New("获取数据库类型时出现致命错误：不受支持的数据库类型：" + dbTypeString)
 	}
-}
-
-func Test() {
-	//insert := []string{"2018-09-01", "23", "312231", "3123313", "12231324543243"}
-	//fmt.Println(insertMySQL("image_statistics", insert))
-
-	//update := map[string]string{"date":"2018-09-01"}
-	//fmt.Println(updateMySQL("image_statistics", "upload_count", 10000, update))
-
-	//query := map[string]string{"date":"2018-09-01"}
-	//fmt.Println(selectMySQL("image_statistics", query))
-
-	//fmt.Println(execMySQL("SELECT * FROM image_statistics"))
-
-	//fmt.Println(UpdateGC(231))
-	//
-	//fmt.Println(ReadGC())
-
-	fmt.Println(DownloadCounter("e44378ac-0237-4331-aaf2-63b8818e5c34", 132132))
-
 }

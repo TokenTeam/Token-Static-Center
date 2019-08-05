@@ -6,9 +6,9 @@
 package util
 
 import (
-	"io/ioutil"
-	"github.com/go-yaml/yaml"
 	"errors"
+	"github.com/go-yaml/yaml"
+	"io/ioutil"
 )
 
 

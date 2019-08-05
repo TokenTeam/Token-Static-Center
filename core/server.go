@@ -6,13 +6,13 @@
 package core
 
 import (
-	"github.com/husobee/vestigo"
+	"errors"
 	"github.com/TokenTeam/Token-Static-Center/app"
+	"github.com/TokenTeam/Token-Static-Center/security"
+	"github.com/TokenTeam/Token-Static-Center/util"
+	"github.com/husobee/vestigo"
 	"github.com/justinas/alice"
 	"net/http"
-	"github.com/TokenTeam/Token-Static-Center/util"
-	"errors"
-	"github.com/TokenTeam/Token-Static-Center/security"
 )
 
 // 初始化服务器

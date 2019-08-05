@@ -1,17 +1,17 @@
 package main
 
 import (
-	"github.com/TokenTeam/Token-Static-Center/util"
 	"flag"
+	"fmt"
+	"github.com/TokenTeam/Token-Static-Center/core"
+	"github.com/TokenTeam/Token-Static-Center/util"
+	_ "github.com/mkevac/debugcharts" // 可选，添加后可以查看几个实时图表数据
+	"gopkg.in/gographics/imagick.v2/imagick"
 	"log"
+	"net/http"
+	_ "net/http/pprof" // 必须，引入 pprof 模块
 	"os"
 	"strconv"
-	"github.com/TokenTeam/Token-Static-Center/core"
-	_ "github.com/mkevac/debugcharts" // 可选，添加后可以查看几个实时图表数据
-	_ "net/http/pprof" // 必须，引入 pprof 模块
-	"net/http"
-	"fmt"
-	"gopkg.in/gographics/imagick.v2/imagick"
 )
 
 const VERSION = "1.11.0"
