@@ -12,7 +12,8 @@ import (
 )
 
 // 写入到文件的日志缓存
-var logCache [10]string
+var logCacheLength int
+var logCache []string
 
 // 日志结构
 type log struct {
@@ -21,6 +22,13 @@ type log struct {
 	log_module string			// 日志所记录的模块
 	log_trace string			// 日志相关操作涉及到的路径
 	log_content string			// 日志所返回相关信息
+}
+
+// 初始化缓存
+func InitLogCache() {
+	cacheLength, _ := GetConfig("Global", "Log", "LogCacheLength")
+	logCacheLength = cacheLength.(int)
+	logCache = make([]string, logCacheLength)
 }
 
 // Web访问日志
@@ -206,8 +214,16 @@ func fileOutput(logLine log) {
 			logCache[each] = ""
 		}
 
-		// 将当前日志放在缓冲区最开始的位置
-		logCache[0] = fmt.Sprintf("[%s] @ %s (%s) %s (相关路径: %s)", logLine.log_type, logLine.log_module, logLine.log_time, logLine.log_content, logLine.log_trace)
+		// 若缓冲区长度不为0，将当前日志放在缓冲区最开始的位置
+		// 否则直接输出
+		logText := fmt.Sprintf("[%s] @ %s (%s) %s (相关路径: %s)", logLine.log_type, logLine.log_module, logLine.log_time, logLine.log_content, logLine.log_trace)
+		if logCacheLength != 0 {
+			logCache[0] = logText
+		} else {
+			currentLogLine := logText + "\n"
+			fileHandle.Write([]byte(currentLogLine))
+		}
+
 
 		return
 	}

@@ -28,6 +28,9 @@ global:
     # - x-forwarded-for       Nginx端的X-Forwarded-For
     # - cloud-flare           CloudFlare使用的CF-Connecting-IP
     ip-type: x-forwarded-for
+    # 日志缓存长度
+    # 设置为0以关闭缓存
+    log-cache-length: 0
 
   # 数据库配置
   db:

@@ -44,6 +44,9 @@ func main() {
 	// Step 2. 加载配置文件
 	err := util.ReadConfig(*configFilePath)
 
+	// 初始化日志队列
+	util.InitLogCache()
+
 	if err != nil {
 		util.ErrorLog("main", err.Error(), "main->ReadConfig")
 		return
