@@ -25,8 +25,8 @@ RUN yum install -y epel-release \
     && yum install -y graphviz libjpeg-turbo libjpeg-turbo-devel libjpeg-turbo-utils libpng libpng-devel libpng-static libtiff libtiff-devel libtiff-static giflib giflib-devel giflib-utils libwebp libwebp-devel libwebp-tools make gcc gcc-g++ libtool pkgconfig zip unzip tar gzip freetype freetype-devel wget
 
 RUN cd /tmp \
-    && wget https://dl.google.com/go/go1.11.linux-amd64.tar.gz \
-    && tar -zxvf /tmp/go1.11.linux-amd64.tar.gz \
+    && wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz \
+    && tar -zxvf /tmp/go1.12.7.linux-amd64.tar.gz \
     && tar -zxvf /tmp/ImageMagick-6.9.10-23.tar.gz \
     && mkdir /tmp/vendor \
     && mv /tmp/vendor.zip /tmp/vendor/ \
@@ -43,7 +43,7 @@ RUN mv /tmp/go /usr/local/ \
 
 RUN cd /tmp/ImageMagick6-6.9.10-23 \
     && ./configure --with-webp \
-    && make -j 24 \
+    && make -j 1 \
     && make install
 
 RUN mkdir -p /home/gopath/src/github.com/TokenTeam/Token-Static-Center \
