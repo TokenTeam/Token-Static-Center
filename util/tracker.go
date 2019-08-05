@@ -6,27 +6,44 @@
 package util
 
 import (
+	"net"
 	"net/http"
 	"strings"
 )
 
 // 获取当前请求者的IP地址
 func GetRequestIP(r *http.Request) (requestIP string) {
-	// 兼容IPv6（八段地址+一个端口）
-	requestAddrArray := make([]string, 9)
+	ipType, err := GetConfig("Global", "Log", "IPType")
 
-	// 按冒号分割（如果是IPv6则分割出九个元素）
-	requestAddrArray = strings.Split(r.RemoteAddr, ":")
-
-	// 最后返回的地址字符串
-	requestAddrString := ""
-
-	// 将最后一个端口号去除
-	for i := 0; i < len(requestAddrArray) - 1; i++ {
-		requestAddrString += requestAddrArray[i]
+	if err != nil {
+		return "配置文件读取失败"
 	}
 
-	return requestAddrString
+	var ipPort string
+
+	switch ipType {
+	case "native":
+		ipPort, _, _ = net.SplitHostPort(r.RemoteAddr)
+		break
+	case "real-ip":
+		ipPort = r.Header.Get("X-Real-IP")
+		break
+	case "x-forwarded-for":
+		ipPort = r.Header.Get("X-Forwarded-For")
+		break
+	case "cloud-flare":
+		ipPort = r.Header.Get("CF-Connecting-IP")
+		break
+	default:
+		return "配置文件中日志采集IP类别错误"
+	}
+
+	// Fallback
+	if ipPort == "" {
+		ipPort, _, _ = net.SplitHostPort(r.RemoteAddr)
+	}
+
+	return ipPort
 }
 
 // 获取所请求的链接地址

@@ -28,6 +28,7 @@ type Config struct {
 			LogOperation string		`yaml:"log-operation"`
 			LogWarning string		`yaml:"log-warning"`
 			LogError string			`yaml:"log-error"`
+			IPType string			`yaml:"ip-type"`
 		}							`yaml:"log"`
 		Db struct {
 			DbType string			`yaml:"db-type"`

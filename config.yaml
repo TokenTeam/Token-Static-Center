@@ -21,6 +21,13 @@ global:
     log-warning: on
     # 错误日志
     log-error: on
+    # IP地址类别
+    # 适配反向代理
+    # - native                原生IP地址
+    # - real-ip               Nginx端的X-Real-IP
+    # - x-forwarded-for       Nginx端的X-Forwarded-For
+    # - cloud-flare           CloudFlare使用的CF-Connecting-IP
+    ip-type: x-forwarded-for
 
   # 数据库配置
   db:
