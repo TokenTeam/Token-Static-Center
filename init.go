@@ -14,6 +14,8 @@ import (
 	"gopkg.in/gographics/imagick.v2/imagick"
 )
 
+const VERSION = "1.11.0"
+
 func main() {
 
 	if os.Getenv("DEBUG") == "true" {
@@ -69,7 +71,7 @@ func main() {
 	util.OperationLog("main", "使用配置文件中的端口" + strconv.Itoa(int(listenPort)), "main->listenPort")
 
 	// 输出欢迎信息
-	util.AccessLog("main", "欢迎使用 Token-Static-Center v1.10, 初始化完成，开始接受外部请求，启动服务", "main")
+	util.AccessLog("main", "欢迎使用 Token-Static-Center v" + VERSION + ", 初始化完成，开始接受外部请求，启动服务", "main")
 
 
 	// Step 4. 开始监听
