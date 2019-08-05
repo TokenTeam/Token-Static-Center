@@ -248,6 +248,10 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	if debugConfig == "on" {
+		cacheSizeByte = bytes.Count(imageData, nil)
+	}
+
 	// 记录访问流量与频次
 	err = db.DownloadCounter(GUID, cacheSizeByte)
 	if err != nil {
