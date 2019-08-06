@@ -42,7 +42,7 @@ RUN mv /tmp/go /usr/local/ \
     && mkdir -p /home/log 
 
 RUN cd /tmp/ImageMagick6-6.9.10-10 \
-    && ./configure --with-webp --with-quantum-depth=8 --disable-openmp \
+    && ./configure --with-webp --with-quantum-depth=8 --disable-openmp --with-cache=16MB \
     && make -j$(nproc) \
     && make install
 
