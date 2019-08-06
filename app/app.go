@@ -13,6 +13,7 @@ import (
 	"github.com/TokenTeam/Token-Static-Center/db"
 	"github.com/TokenTeam/Token-Static-Center/util"
 	"github.com/satori/go.uuid"
+	"gopkg.in/gographics/imagick.v2/imagick"
 	"html/template"
 	"io"
 	"mime"
@@ -46,6 +47,11 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 // 图像输出
 func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
+	// 初始化
+	imagick.Initialize()
+	// 延迟执行
+	defer imagick.Terminate()
+
 	// 记录访问请求
 	accessLogger(r,"ImageFetchHandler")
 
@@ -266,6 +272,11 @@ func ImageFetchHandler(w http.ResponseWriter, r *http.Request) {
 
 // 图像上传
 func ImageUploadHandler(w http.ResponseWriter, r *http.Request) {
+	// 初始化
+	imagick.Initialize()
+	// 延迟执行
+	defer imagick.Terminate()
+
 	// 记录上传请求
 	accessLogger(r, "ImageUploadHandler")
 

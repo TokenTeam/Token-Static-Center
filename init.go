@@ -6,7 +6,6 @@ import (
 	"github.com/TokenTeam/Token-Static-Center/core"
 	"github.com/TokenTeam/Token-Static-Center/util"
 	_ "github.com/mkevac/debugcharts" // 可选，添加后可以查看几个实时图表数据
-	"gopkg.in/gographics/imagick.v2/imagick"
 	"log"
 	"net/http"
 	_ "net/http/pprof" // 必须，引入 pprof 模块
@@ -28,11 +27,6 @@ func main() {
 			log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
 		}()
 	}
-
-	// 初始化
-	imagick.Initialize()
-	// 延迟执行
-	defer imagick.Terminate()
 
 	// Step 1. 从命令行参数获取配置文件路径
 	configFilePath := flag.String("config", "", "配置文件路径，必须指定，无默认值！")
