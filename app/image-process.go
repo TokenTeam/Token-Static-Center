@@ -273,6 +273,8 @@ func TextWatermark(inputFileStream []byte, watermarkPosition uint,
 
 	// 绘制文字阴影
 	shadowLayer := imageWatermarkHandler.Clone()
+	defer shadowLayer.Destroy()
+
 	shadowLayer.ShadowImage(30, 1.2, 0, 0)
 	// 默认的Shadow是白色的，进行反色处理，变成黑色
 	shadowLayer.NegateImage(true)
