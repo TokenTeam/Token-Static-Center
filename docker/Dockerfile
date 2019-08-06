@@ -42,8 +42,8 @@ RUN mv /tmp/go /usr/local/ \
     && mkdir -p /home/log 
 
 RUN cd /tmp/ImageMagick6-6.9.10-10 \
-    && ./configure --with-webp \
-    && make -j 1 \
+    && ./configure --with-webp --with-quantum-depth=8 \
+    && make -j$(nproc) \
     && make install
 
 RUN mkdir -p /home/gopath/src/github.com/TokenTeam/Token-Static-Center \
