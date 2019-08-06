@@ -1,7 +1,7 @@
 FROM centos
 MAINTAINER LiuFuXin <loli@lurenjia.in>
 
-COPY ImageMagick-6.9.10-23.tar.gz /tmp
+COPY ImageMagick-6.9.10-10.tar.gz /tmp
 COPY vendor.zip /tmp
 COPY entrypoint.sh /
 
@@ -27,7 +27,7 @@ RUN yum install -y epel-release \
 RUN cd /tmp \
     && wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz \
     && tar -zxvf /tmp/go1.12.7.linux-amd64.tar.gz \
-    && tar -zxvf /tmp/ImageMagick-6.9.10-23.tar.gz \
+    && tar -zxvf /tmp/ImageMagick-6.9.10-10.tar.gz \
     && mkdir /tmp/vendor \
     && mv /tmp/vendor.zip /tmp/vendor/ \
     && cd /tmp/vendor \
@@ -41,7 +41,7 @@ RUN mv /tmp/go /usr/local/ \
     && mkdir -p /home/htdocs \
     && mkdir -p /home/log 
 
-RUN cd /tmp/ImageMagick6-6.9.10-23 \
+RUN cd /tmp/ImageMagick6-6.9.10-10 \
     && ./configure --with-webp \
     && make -j 1 \
     && make install
