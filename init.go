@@ -5,29 +5,13 @@ import (
 	"fmt"
 	"github.com/TokenTeam/Token-Static-Center/core"
 	"github.com/TokenTeam/Token-Static-Center/util"
-	_ "github.com/mkevac/debugcharts" // 可选，添加后可以查看几个实时图表数据
-	"log"
 	"net/http"
-	_ "net/http/pprof" // 必须，引入 pprof 模块
-	"os"
 	"strconv"
 )
 
 const VERSION = "1.11.0"
 
 func main() {
-
-	if os.Getenv("DEBUG") == "true" {
-		go func() {
-			// terminal: $ go tool pprof -http=:8081 http://localhost:6060/debug/pprof/heap
-			// web:
-			// 1、http://localhost:8081/ui
-			// 2、http://localhost:6060/debug/charts
-			// 3、http://localhost:6060/debug/pprof
-			log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
-		}()
-	}
-
 	// Step 1. 从命令行参数获取配置文件路径
 	configFilePath := flag.String("config", "", "配置文件路径，必须指定，无默认值！")
 	flag.Parse()
